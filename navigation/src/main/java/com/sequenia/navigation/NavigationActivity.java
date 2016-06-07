@@ -56,12 +56,12 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     private void initDashboard() {
-        String tag = NavigationFragment.getTransactionTag(getSettings().getDashboardSectionId());
+        String tag = NavigationFragment.getTransactionTag(getSettings().getDashboardScreenId());
         FragmentManager fragmentManager = getSupportFragmentManager();
         NavigationFragment dashboardFragment = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
         if(dashboardFragment == null) {
-            dashboardFragment = getSettings().getFabric().createSection(getSettings().getDashboardSectionId());
+            dashboardFragment = getSettings().getFabric().createScreen(getSettings().getDashboardScreenId());
             fragmentManager
                     .beginTransaction()
                     .add(getSettings().getFragmentContainerId(), dashboardFragment, tag)
@@ -85,8 +85,14 @@ public abstract class NavigationActivity extends AppCompatActivity {
         fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
     }
 
+    private void removeBackStackListener() {
+        if(onBackStackChangedListener != null) {
+            getSupportFragmentManager().removeOnBackStackChangedListener(onBackStackChangedListener);
+        }
+    }
+
     public void setupScreen() {
-        NavigationFragment currentFragment = getCurrentSection();
+        NavigationFragment currentFragment = getCurrentScreen();
         if(currentFragment != null) {
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null) {
@@ -96,8 +102,24 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    public void openSection(int sectionNumber) {
-        NavigationFragment fragment = getSettings().getFabric().createSection(sectionNumber);
+    public void openScreenWithClear(int screenId) {
+        openScreenWithClear(screenId, new Bundle());
+    }
+
+    public void openScreenWithClear(int screenId, Bundle args) {
+        openScreen(screenId, args, 0);
+    }
+
+    public void openScreen(int screenId, int depth) {
+        openScreen(screenId, new Bundle(), depth);
+    }
+
+    public void openScreen(int screenId) {
+        openScreen(screenId, new Bundle());
+    }
+
+    public void openScreen(int screenId, Bundle args) {
+        NavigationFragment fragment = getSettings().getFabric().createScreen(screenId, args);
         String tag = fragment.getTransactionTag();
 
         getSupportFragmentManager()
@@ -105,6 +127,23 @@ public abstract class NavigationActivity extends AppCompatActivity {
                 .replace(getSettings().getFragmentContainerId(), fragment, tag)
                 .addToBackStack(tag)
                 .commit();
+    }
+
+    public void openScreen(int screenId, Bundle args, int depth) {
+        removeBackStackListener();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        int depthAdjustment = getSettings().getDepthAdjustment();
+
+        if(fragmentManager.getBackStackEntryCount() > 1) {
+            String name = fragmentManager.getBackStackEntryAt(depthAdjustment).getName();
+            fragmentManager.popBackStack(name, depthAdjustment);
+        }
+
+        addBackStackListener();
+
+        openScreen(screenId, args);
     }
 
     @Override
@@ -116,7 +155,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    public NavigationFragment getCurrentSection() {
+    public NavigationFragment getCurrentScreen() {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         int fragmentsCount = fragmentManager.getBackStackEntryCount();
@@ -184,7 +223,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         private Integer fragmentContainerId;
         private Integer toolbarId;
         private Integer toolbarTitleId;
-        private Integer dashboardSectionId;
+        private Integer dashboardScreenId;
         private NavigationFragment.NavigationFragmentFabric fabric;
 
         public Integer getLayoutId() {
@@ -214,12 +253,12 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
-        public Integer getDashboardSectionId() {
-            return dashboardSectionId;
+        public Integer getDashboardScreenId() {
+            return dashboardScreenId;
         }
 
-        public NavigationActivitySettings setDashboardSectionId(Integer dashboardSectionId) {
-            this.dashboardSectionId = dashboardSectionId;
+        public NavigationActivitySettings setDashboardScreenId(Integer dashboardScreenId) {
+            this.dashboardScreenId = dashboardScreenId;
             return this;
         }
 
@@ -241,6 +280,14 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
+        public int getDepthAdjustment() {
+            if(hasDashboard()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
         public boolean hasCustomTitle() {
             return toolbarTitleId != null;
         }
@@ -250,7 +297,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
 
         public boolean hasDashboard() {
-            return dashboardSectionId != null;
+            return dashboardScreenId != null;
         }
 
         public boolean hasFabric() {

@@ -20,22 +20,22 @@ public abstract class NavigationFragment extends Fragment {
      * Под данным ключем константа передается во фрагмент.
      * Далее, по этому ключу в аргументах можно идентифицировать фрагмент.
      */
-    private static final String ARG_SECTION_ID = "ArgSectionId";
+    private static final String ARG_SCREEN_ID = "ArgScreenId";
 
     private NavigationFragmentSettings fragmentSettings;
 
     /**
-     * Задает номер секции фрагменту
-     * @param sectionId id секции
+     * Задает номер экрана фрагменту
+     * @param screenId id экрана
      */
-    public void setSectionNumber(int sectionId) {
+    public void setScreenId(int screenId) {
         Bundle args = getArguments();
 
         if(args == null) {
             args = new Bundle();
         }
 
-        args.putInt(ARG_SECTION_ID, sectionId);
+        args.putInt(ARG_SCREEN_ID,  screenId);
 
         setArguments(args);
     }
@@ -49,8 +49,8 @@ public abstract class NavigationFragment extends Fragment {
             throw new IllegalStateException("Fragment arguments not set");
         }
 
-        if(!args.containsKey(ARG_SECTION_ID)) {
-            throw new IllegalStateException("Fragment section not set");
+        if(!args.containsKey(ARG_SCREEN_ID)) {
+            throw new IllegalStateException("Fragment screen id not set");
         }
 
         // Создание разметки фрагмента. ID разметки обязательно должен быть задан
@@ -84,15 +84,15 @@ public abstract class NavigationFragment extends Fragment {
     }
 
     public String getTransactionTag() {
-        return getTransactionTag(getSectionNumber());
+        return getTransactionTag(getScreenId());
     }
 
-    public static String getTransactionTag(int sectionNumber) {
-        return String.valueOf(sectionNumber);
+    public static String getTransactionTag(int screenId) {
+        return String.valueOf(screenId);
     }
 
-    public int getSectionNumber() {
-        return getArguments().getInt(ARG_SECTION_ID);
+    public int getScreenId() {
+        return getArguments().getInt(ARG_SCREEN_ID);
     }
 
     public boolean hasBackButton() {
@@ -117,11 +117,16 @@ public abstract class NavigationFragment extends Fragment {
 
     public static abstract class NavigationFragmentFabric {
 
-        protected abstract NavigationFragment newInstance(int sectionNumber);
+        protected abstract NavigationFragment newInstance(int screenId);
 
-        public NavigationFragment createSection(int sectionNumber) {
-            NavigationFragment fragment = newInstance(sectionNumber);
-            fragment.setSectionNumber(sectionNumber);
+        public NavigationFragment createScreen(int screenId) {
+            return createScreen(screenId, new Bundle());
+        }
+
+        public NavigationFragment createScreen(int screenId, Bundle args) {
+            NavigationFragment fragment = newInstance(screenId);
+            fragment.setArguments(args);
+            fragment.setScreenId(screenId);
             return fragment;
         }
     }

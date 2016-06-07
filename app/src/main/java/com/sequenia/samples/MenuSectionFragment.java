@@ -10,25 +10,25 @@ import com.sequenia.navigation.NavigationFragment;
  * Created by chybakut2004 on 07.06.16.
  */
 
-public class DashboardFragment extends NavigationFragment {
+public class MenuSectionFragment extends NavigationFragment {
 
-    private View openSectionButton;
+    private View openDeepScreenButton;
 
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
-                .setLayoutId(R.layout.fragment_dashboard)
-                .setHasBackButton(false);
+                .setLayoutId(R.layout.fragment_menu_section)
+                .setHasBackButton(true);
     }
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        openSectionButton = view.findViewById(R.id.open_section_button);
+        openDeepScreenButton = view.findViewById(R.id.open_deep_screen_button);
 
-        openSectionButton.setOnClickListener(new View.OnClickListener() {
+        openDeepScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_MENU_SECTION);
+                getNavigationActivity().openScreen(MainActivity.SCREEN_DEEP_SECTION);
             }
         });
     }
