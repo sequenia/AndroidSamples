@@ -9,8 +9,6 @@ public class MainActivity extends NavigationActivity {
     public static final int SCREEN_MENU_SECTION = 2;
     public static final int SCREEN_DEEP_SECTION = 3;
 
-
-
     @Override
     protected void setup(NavigationActivitySettings activitySettings) {
         activitySettings
@@ -18,6 +16,7 @@ public class MainActivity extends NavigationActivity {
                 .setFragmentContainerId(R.id.frame_layout)
                 .setToolbarId(R.id.toolbar)
                 .setToolbarTitleId(R.id.toolbar_title)
+                .setMenuId(R.menu.main_menu)
                 .setDashboardScreenId(SCREEN_DASHBOARD)
                 .setFabric(new NavigationFragment.NavigationFragmentFabric() {
                     @Override

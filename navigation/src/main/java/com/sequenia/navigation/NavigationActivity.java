@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -99,6 +100,16 @@ public abstract class NavigationActivity extends AppCompatActivity {
                 actionBar.setDisplayHomeAsUpEnabled(currentFragment.hasBackButton());
                 actionBar.setHomeButtonEnabled(true);
             }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(getSettings().hasMenu()) {
+            getMenuInflater().inflate(getSettings().getMenuId(), menu);
+            return true;
+        } else {
+            return super.onCreateOptionsMenu(menu);
         }
     }
 
@@ -224,6 +235,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         private Integer toolbarId;
         private Integer toolbarTitleId;
         private Integer dashboardScreenId;
+        private Integer menuId;
         private NavigationFragment.NavigationFragmentFabric fabric;
 
         public Integer getLayoutId() {
@@ -280,6 +292,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
+        public Integer getMenuId() {
+            return menuId;
+        }
+
+        public NavigationActivitySettings setMenuId(Integer menuId) {
+            this.menuId = menuId;
+            return this;
+        }
+
         public int getDepthAdjustment() {
             if(hasDashboard()) {
                 return 1;
@@ -310,6 +331,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         public boolean hasFragmentContainerId() {
             return fragmentContainerId != null;
+        }
+
+        public boolean hasMenu() {
+            return menuId != null;
         }
     }
 }

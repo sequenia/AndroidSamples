@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -54,13 +56,17 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         // Создание разметки фрагмента. ID разметки обязательно должен быть задан
-        Integer layoutId = getFragmentSettings().getLayoutId();
-        if(layoutId == null) {
+        if(!getFragmentSettings().hasLayoutId()) {
             throw new IllegalStateException("Fragment layoutId not set");
         }
 
-        View view = inflater.inflate(layoutId, container, false);
+        View view = inflater.inflate(getFragmentSettings().getLayoutId(), container, false);
         onLayoutCreated(inflater, view, savedInstanceState);
+
+        if(getFragmentSettings().hasMenu()) {
+            setHasOptionsMenu(true);
+        }
+
         return view;
     }
 
@@ -81,6 +87,15 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         return fragmentSettings;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if(getFragmentSettings().hasMenu()) {
+            inflater.inflate(getFragmentSettings().getMenuId(), menu);
+        } else {
+            super.onCreateOptionsMenu(menu, inflater);
+        }
     }
 
     public String getTransactionTag() {
@@ -150,6 +165,8 @@ public abstract class NavigationFragment extends Fragment {
          */
         private BackButtonVisibilityRule backButtonVisibilityRule;
 
+        private Integer menuId;
+
         private Integer getLayoutId() {
             return layoutId;
         }
@@ -157,10 +174,6 @@ public abstract class NavigationFragment extends Fragment {
         public NavigationFragmentSettings setLayoutId(Integer layoutId) {
             this.layoutId = layoutId;
             return this;
-        }
-
-        public boolean isHasBackButton() {
-            return backButtonVisibilityRule.hasBackButton();
         }
 
         public NavigationFragmentSettings setHasBackButton(final boolean hasBackButton) {
@@ -176,6 +189,26 @@ public abstract class NavigationFragment extends Fragment {
         public NavigationFragmentSettings setBackButtonVisibilityRule(BackButtonVisibilityRule backButtonVisibilityRule) {
             this.backButtonVisibilityRule = backButtonVisibilityRule;
             return this;
+        }
+
+        public boolean isHasBackButton() {
+            return backButtonVisibilityRule != null && backButtonVisibilityRule.hasBackButton();
+        }
+
+        public Integer getMenuId() {
+            return menuId;
+        }
+
+        public void setMenuId(Integer menuId) {
+            this.menuId = menuId;
+        }
+
+        public boolean hasMenu() {
+            return menuId != null;
+        }
+
+        public boolean hasLayoutId() {
+            return layoutId != null;
         }
     }
 }

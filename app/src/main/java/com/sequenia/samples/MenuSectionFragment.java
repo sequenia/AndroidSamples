@@ -18,7 +18,8 @@ public class MenuSectionFragment extends NavigationFragment {
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
                 .setLayoutId(R.layout.fragment_menu_section)
-                .setHasBackButton(true);
+                .setHasBackButton(true)
+                .setMenuId(R.menu.fragment_menu);
     }
 
     @Override
