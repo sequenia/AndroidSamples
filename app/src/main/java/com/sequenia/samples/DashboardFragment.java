@@ -21,8 +21,10 @@ public class DashboardFragment extends NavigationFragment {
     private View openSectionButton;
 
     @Override
-    public void setup(NavigationFragmentSettings settings) {
-        settings.setLayoutId(R.layout.fragment_dashboard);
+    public void setup(NavigationFragmentSettings fragmentSettings) {
+        fragmentSettings
+                .setLayoutId(R.layout.fragment_dashboard)
+                .setHasBackButton(false);
     }
 
     @Override

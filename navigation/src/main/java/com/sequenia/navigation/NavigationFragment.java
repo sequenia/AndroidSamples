@@ -22,7 +22,7 @@ public abstract class NavigationFragment extends Fragment {
      */
     private static final String ARG_SECTION_ID = "ArgSectionId";
 
-    private NavigationFragmentSettings settings;
+    private NavigationFragmentSettings fragmentSettings;
 
     /**
      * Задает номер секции фрагменту
@@ -54,7 +54,7 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         // Создание разметки фрагмента. ID разметки обязательно должен быть задан
-        Integer layoutId = getSettings().getLayoutId();
+        Integer layoutId = getFragmentSettings().getLayoutId();
         if(layoutId == null) {
             throw new IllegalStateException("Fragment layoutId not set");
         }
@@ -74,13 +74,13 @@ public abstract class NavigationFragment extends Fragment {
         }
     }
 
-    protected NavigationFragmentSettings getSettings() {
-        if(settings == null) {
-            settings = new NavigationFragmentSettings();
-            setup(settings);
+    protected NavigationFragmentSettings getFragmentSettings() {
+        if(fragmentSettings == null) {
+            fragmentSettings = new NavigationFragmentSettings();
+            setup(fragmentSettings);
         }
 
-        return settings;
+        return fragmentSettings;
     }
 
     public String getTransactionTag() {
@@ -95,12 +95,16 @@ public abstract class NavigationFragment extends Fragment {
         return getArguments().getInt(ARG_SECTION_ID);
     }
 
+    public boolean hasBackButton() {
+        return getFragmentSettings().isHasBackButton();
+    }
+
     /**
      * Здесь нужно настроить фрагмент, например,
      * задать ему id разметки, которая будет в нем отображаться.
-     * @param settings Настройки
+     * @param fragmentSettings Настройки
      */
-    public abstract void setup(NavigationFragmentSettings settings);
+    public abstract void setup(NavigationFragmentSettings fragmentSettings);
 
     /**
      * Вызываетя после создания разметки фрагмента.
@@ -122,15 +126,24 @@ public abstract class NavigationFragment extends Fragment {
         }
     }
 
+    protected interface BackButtonVisibilityRule {
+        boolean hasBackButton();
+    }
+
     /**
      * Класс для хранения настроек фрагмента
      */
-    protected class NavigationFragmentSettings{
+    protected class NavigationFragmentSettings {
 
         /**
          * ID разметки фрагмента
          */
         private Integer layoutId;
+
+        /**
+         * Хранит правило для отображения кнопки назад
+         */
+        private BackButtonVisibilityRule backButtonVisibilityRule;
 
         private Integer getLayoutId() {
             return layoutId;
@@ -138,6 +151,25 @@ public abstract class NavigationFragment extends Fragment {
 
         public NavigationFragmentSettings setLayoutId(Integer layoutId) {
             this.layoutId = layoutId;
+            return this;
+        }
+
+        public boolean isHasBackButton() {
+            return backButtonVisibilityRule.hasBackButton();
+        }
+
+        public NavigationFragmentSettings setHasBackButton(final boolean hasBackButton) {
+            this.backButtonVisibilityRule = new BackButtonVisibilityRule() {
+                @Override
+                public boolean hasBackButton() {
+                    return hasBackButton;
+                }
+            };
+            return this;
+        }
+
+        public NavigationFragmentSettings setBackButtonVisibilityRule(BackButtonVisibilityRule backButtonVisibilityRule) {
+            this.backButtonVisibilityRule = backButtonVisibilityRule;
             return this;
         }
     }

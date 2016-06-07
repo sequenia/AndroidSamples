@@ -14,8 +14,10 @@ import com.sequenia.navigation.NavigationFragment;
 public class SectionFragment extends NavigationFragment {
 
     @Override
-    public void setup(NavigationFragmentSettings settings) {
-        settings.setLayoutId(R.layout.fragment_section);
+    public void setup(NavigationFragmentSettings fragmentSettings) {
+        fragmentSettings
+                .setLayoutId(R.layout.fragment_section)
+                .setHasBackButton(true);
     }
 
     @Override

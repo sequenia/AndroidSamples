@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 /**
@@ -17,24 +18,14 @@ import android.widget.TextView;
 public abstract class NavigationActivity extends AppCompatActivity {
 
     private NavigationActivitySettings settings;
-
     private TextView customTitle;
+    private FragmentManager.OnBackStackChangedListener onBackStackChangedListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(!getSettings().hasFabric()) {
-            throw new IllegalStateException("Fragment fabric not set");
-        }
-
-        if(!getSettings().hasFragmentContainerId()) {
-            throw new IllegalStateException("Fragment container id not set");
-        }
-
-        if(!getSettings().hasLayoutId()) {
-            throw new IllegalStateException("Activity layoutId not set");
-        }
+        validateSettings();
 
         setContentView(getSettings().getLayoutId());
 
@@ -42,9 +33,13 @@ public abstract class NavigationActivity extends AppCompatActivity {
             initToolbar();
         }
 
+        addBackStackListener();
+
         if(getSettings().hasDashboard()) {
             initDashboard();
         }
+
+        setupScreen();
     }
 
     private void initToolbar() {
@@ -72,6 +67,32 @@ public abstract class NavigationActivity extends AppCompatActivity {
                     .add(getSettings().getFragmentContainerId(), dashboardFragment, tag)
                     .addToBackStack(tag)
                     .commit();
+        }
+    }
+
+    private void addBackStackListener() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(onBackStackChangedListener != null) {
+            fragmentManager.removeOnBackStackChangedListener(onBackStackChangedListener);
+        }
+
+        onBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setupScreen();
+            }
+        };
+        fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
+    }
+
+    public void setupScreen() {
+        NavigationFragment currentFragment = getCurrentSection();
+        if(currentFragment != null) {
+            ActionBar actionBar = getSupportActionBar();
+            if(actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(currentFragment.hasBackButton());
+                actionBar.setHomeButtonEnabled(true);
+            }
         }
     }
 
@@ -106,6 +127,32 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         FragmentManager.BackStackEntry lastEntry = fragmentManager.getBackStackEntryAt(fragmentsCount - 1);
         return (NavigationFragment) fragmentManager.findFragmentByTag(lastEntry.getName());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void validateSettings() {
+        if(!getSettings().hasFabric()) {
+            throw new IllegalStateException("Fragment fabric not set");
+        }
+
+        if(!getSettings().hasFragmentContainerId()) {
+            throw new IllegalStateException("Fragment container id not set");
+        }
+
+        if(!getSettings().hasLayoutId()) {
+            throw new IllegalStateException("Activity layoutId not set");
+        }
     }
 
     protected int getDepth() {
