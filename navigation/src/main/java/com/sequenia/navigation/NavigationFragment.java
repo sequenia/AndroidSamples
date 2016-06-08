@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 
 /**
  * Навигационный фрагмент. Каждый экран в приложении представлен наследником этого класса.
+ *
+ * Для создания экрана унаследуйте фрагмент от этого класса
+ * и настройте через переданный в метод setup объект настроек.
+ *
  * Created by chybakut2004 on 07.06.16.
  */
 
@@ -20,17 +24,20 @@ public abstract class NavigationFragment extends Fragment {
     /**
      * Все фрагменты навигации должны быть пронумерованы неповторяющимися константами.
      * Под данным ключем константа передается во фрагмент.
-     * Далее, по этому ключу в аргументах можно идентифицировать фрагмент.
+     * Этот ключ участвует в именовании транзакции и тега при добавлении фрагмента.
      */
     private static final String ARG_SCREEN_ID = "ArgScreenId";
 
-    private NavigationFragmentSettings fragmentSettings;
+    /**
+     * Настройки фрагмента.
+     */
+    private NavigationFragmentSettings settings;
 
     /**
      * Задает номер экрана фрагменту
      * @param screenId id экрана
      */
-    public void setScreenId(int screenId) {
+    private void setScreenId(int screenId) {
         Bundle args = getArguments();
 
         if(args == null) {
@@ -47,16 +54,22 @@ public abstract class NavigationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         validateSettings();
 
-        View view = inflater.inflate(getFragmentSettings().getLayoutId(), container, false);
+        View view = inflater.inflate(getSettings().getLayoutId(), container, false);
         onLayoutCreated(inflater, view, savedInstanceState);
 
-        if(getFragmentSettings().hasMenu()) {
+        if(getSettings().hasMenu()) {
             setHasOptionsMenu(true);
         }
 
         return view;
     }
 
+    /**
+     * Пользуйтесь этим методом для обращения к навигационному Activity фрагмента.
+     * Это необходимо, например, для открытия нового экрана или закрытия текущего.
+     *
+     * @return экземпляр Activity, к которому прикреплен фрагмент.
+     */
     public NavigationActivity getNavigationActivity() {
         Activity activity = getActivity();
 
@@ -67,44 +80,31 @@ public abstract class NavigationFragment extends Fragment {
         }
     }
 
-    protected NavigationFragmentSettings getFragmentSettings() {
-        if(fragmentSettings == null) {
-            fragmentSettings = new NavigationFragmentSettings();
-            setup(fragmentSettings);
+    /**
+     * @return Настройки фрагмента. Если настройки еще не созданы, создает их,
+     * вызывая настроечный метод фрагмента.
+     */
+    private NavigationFragmentSettings getSettings() {
+        if(settings == null) {
+            settings = new NavigationFragmentSettings();
+            setup(settings);
         }
 
-        return fragmentSettings;
+        return settings;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(getFragmentSettings().hasMenu()) {
-            inflater.inflate(getFragmentSettings().getMenuId(), menu);
+        if(getSettings().hasMenu()) {
+            inflater.inflate(getSettings().getMenuId(), menu);
         } else {
             super.onCreateOptionsMenu(menu, inflater);
         }
     }
 
-    public String getTransactionTag(int index) {
-        return getTransactionTag(getScreenId(), index);
-    }
-
-    public static String getTransactionTag(int screenId, int index) {
-        return "fragment" + "_" + screenId + "index" + "_" + index;
-    }
-
-    public int getScreenId() {
-        return getArguments().getInt(ARG_SCREEN_ID);
-    }
-
-    public boolean hasBackButton() {
-        return getFragmentSettings().isHasBackButton();
-    }
-
-    public String getTitle() {
-        return getFragmentSettings().getTitle();
-    }
-
+    /**
+     * Первичная проверка валидности настроек.
+     */
     private void validateSettings() {
         Bundle args = getArguments();
 
@@ -117,9 +117,44 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         // Создание разметки фрагмента. ID разметки обязательно должен быть задан
-        if(!getFragmentSettings().hasLayoutId()) {
+        if(!getSettings().hasLayoutId()) {
             throw new IllegalStateException("Fragment layoutId not set");
         }
+    }
+
+    String getTransactionTag(int index) {
+        return getTransactionTag(getScreenId(), index);
+    }
+
+    /**
+     *
+     * @param screenId id фрагмента, заданный константами.
+     * @param index индекс фрагмента в стеке. Если это третий по счету открываемый экран, нужно подавать 2 (нумерация с нуля)
+     * @return тег для транзакции и добавления фрагмента
+     */
+    static String getTransactionTag(int screenId, int index) {
+        return "fragment" + "_" + screenId + "index" + "_" + index;
+    }
+
+    /**
+     * @return id фрагмента, заданный константой в фабрике
+     */
+    private int getScreenId() {
+        return getArguments().getInt(ARG_SCREEN_ID);
+    }
+
+    /**
+     * @return true, если в меню этого фрагмента должна быть кнопка назад в тулбаре.
+     */
+    boolean hasBackButton() {
+        return getSettings().isHasBackButton();
+    }
+
+    /**
+     * @return заголовок фрагмента в тулбаре
+     */
+    public String getTitle() {
+        return getSettings().getTitle();
     }
 
     /**
@@ -138,15 +173,32 @@ public abstract class NavigationFragment extends Fragment {
      */
     public abstract void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState);
 
+    /**
+     * Фабрика фрагментов.
+     * Используется для создания экземпляров экранов по их ID, заданными константами.
+     */
     public static abstract class NavigationFragmentFabric {
 
+        /**
+         * Данный метод нужно реализовать для создания экранов по их ID.
+         * При создании экземпляров НЕ НУЖНО задавать фрагментам никаких аргументов,
+         * нужно просто создать экземпляр фрагмента вызовом конструктора через new.
+         * @param screenId id экрана
+         * @return экземпляр экрана (фрагмента).
+         */
         protected abstract NavigationFragment newInstance(int screenId);
 
-        public NavigationFragment createScreen(int screenId) {
+        NavigationFragment createScreen(int screenId) {
             return createScreen(screenId, new Bundle());
         }
 
-        public NavigationFragment createScreen(int screenId, Bundle args) {
+        /**
+         * Создает экран с переданным ID и аргументами
+         * @param screenId ID экрана
+         * @param args аргументы, которые будут переданы во фрагмент
+         * @return созданный экземпляр экрана с заданным ID и аргументами.
+         */
+        NavigationFragment createScreen(int screenId, Bundle args) {
             NavigationFragment fragment = newInstance(screenId);
             fragment.setArguments(args);
             fragment.setScreenId(screenId);
@@ -154,11 +206,31 @@ public abstract class NavigationFragment extends Fragment {
         }
     }
 
+    /**
+     * Правило для видимости кнопки НАЗАД.
+     * Видимость кнопки не обязательно будет строго заданным значением.
+     * Экраны могут реализовывать эту логику в зависимости от своего текущего состояния.
+     * Чтобы обновить вид кнопки, вызовите соответсвующий метод Активити Навигации
+     */
     protected interface BackButtonVisibilityRule {
+
+        /**
+         * @return true, если у фрагмента есть кнопка назад в тулбаре
+         */
         boolean hasBackButton();
     }
 
+    /**
+     * Правило для заголовка фрагмента.
+     * Заголовок на экране не должен быть строго заданным значением.
+     * Экраны могут реализовывать логику заголовка в зависимости от текущего состояния.
+     * Чтобы обновить заголовок, вызовите соответствующий метод Активити Навигации
+     */
     protected interface TitleRule {
+
+        /**
+         * @return заголовок экрана
+         */
         String getTitle();
     }
 

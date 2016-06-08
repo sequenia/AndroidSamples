@@ -18,7 +18,12 @@ public class MenuSectionFragment extends NavigationFragment {
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
                 .setLayoutId(R.layout.fragment_menu_section)
-                .setHasBackButton(true)
+                .setBackButtonVisibilityRule(new BackButtonVisibilityRule() {
+                    @Override
+                    public boolean hasBackButton() {
+                        return true;
+                    }
+                })
                 .setTitleRule(new TitleRule() {
                     @Override
                     public String getTitle() {
