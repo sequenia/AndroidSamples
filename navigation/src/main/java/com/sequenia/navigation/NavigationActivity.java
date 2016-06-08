@@ -37,7 +37,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
         addBackStackListener();
 
         if(getSettings().hasDashboard()) {
-            initDashboard();
+            initFirstScreen(getSettings().getDashboardScreenId());
+        } else {
+            initFirstScreen(getSettings().getMainScreenId());
         }
 
         setupScreen();
@@ -56,16 +58,16 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    private void initDashboard() {
-        String tag = NavigationFragment.getTransactionTag(getSettings().getDashboardScreenId());
+    private void initFirstScreen(int firstScreenId) {
+        String tag = NavigationFragment.getTransactionTag(firstScreenId);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        NavigationFragment dashboardFragment = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
+        NavigationFragment firstScreen = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
-        if(dashboardFragment == null) {
-            dashboardFragment = getSettings().getFabric().createScreen(getSettings().getDashboardScreenId());
+        if(firstScreen == null) {
+            firstScreen = getSettings().getFabric().createScreen(firstScreenId);
             fragmentManager
                     .beginTransaction()
-                    .add(getSettings().getFragmentContainerId(), dashboardFragment, tag)
+                    .add(getSettings().getFragmentContainerId(), firstScreen, tag)
                     .addToBackStack(tag)
                     .commit();
         }
@@ -103,7 +105,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         if(fragment != null) {
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(fragment.hasBackButton());
+                actionBar.setDisplayHomeAsUpEnabled(fragment.hasBackButton() && getDepth() > 1);
                 actionBar.setHomeButtonEnabled(true);
             }
         }
@@ -147,6 +149,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     public void openScreen(int screenId, Bundle args, int depth) {
+        clear(depth);
+        openScreen(screenId, args);
+    }
+
+    public void clear() {
+        clear(0);
+    }
+
+    public void clear(int depth) {
         removeBackStackListener();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -154,13 +165,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
         int depthAdjustment = getSettings().getDepthAdjustment();
 
         if(fragmentManager.getBackStackEntryCount() > 1) {
-            String name = fragmentManager.getBackStackEntryAt(depthAdjustment).getName();
-            fragmentManager.popBackStack(name, depthAdjustment);
+            String name = fragmentManager.getBackStackEntryAt(depthAdjustment + depth).getName();
+            fragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         addBackStackListener();
-
-        openScreen(screenId, args);
     }
 
     @Override
@@ -209,6 +218,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
         if(!getSettings().hasLayoutId()) {
             throw new IllegalStateException("Activity layoutId not set");
         }
+
+        if(!getSettings().hasDashboard() && !getSettings().hasMainScreenId()) {
+            throw new IllegalStateException("Activity mainScreenId or dashboardId not set");
+        }
     }
 
     protected int getDepth() {
@@ -241,6 +254,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         private Integer toolbarId;
         private Integer toolbarTitleId;
         private Integer dashboardScreenId;
+        private Integer mainScreenId;
         private Integer menuId;
         private NavigationFragment.NavigationFragmentFabric fabric;
 
@@ -307,6 +321,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
+        public Integer getMainScreenId() {
+            return mainScreenId;
+        }
+
+        public NavigationActivitySettings setMainScreenId(Integer mainScreenId) {
+            this.mainScreenId = mainScreenId;
+            return this;
+        }
+
         public int getDepthAdjustment() {
             if(hasDashboard()) {
                 return 1;
@@ -341,6 +364,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         public boolean hasMenu() {
             return menuId != null;
+        }
+
+        public boolean hasMainScreenId() {
+            return mainScreenId != null;
         }
     }
 }

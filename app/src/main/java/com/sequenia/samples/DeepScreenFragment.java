@@ -14,6 +14,7 @@ public class DeepScreenFragment extends NavigationFragment {
 
     private View openMenuSectionButton;
     private View openDeepScreenButton;
+    private View clearButton;
 
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
@@ -37,6 +38,14 @@ public class DeepScreenFragment extends NavigationFragment {
             @Override
             public void onClick(View view) {
                 getNavigationActivity().openScreen(MainActivity.SCREEN_DEEP_SECTION);
+            }
+        });
+
+        clearButton = view.findViewById(R.id.clear_button);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getNavigationActivity().clear();
             }
         });
     }
