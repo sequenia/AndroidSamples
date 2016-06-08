@@ -98,12 +98,12 @@ public abstract class NavigationFragment extends Fragment {
         }
     }
 
-    public String getTransactionTag() {
-        return getTransactionTag(getScreenId());
+    public String getTransactionTag(int index) {
+        return getTransactionTag(getScreenId(), index);
     }
 
-    public static String getTransactionTag(int screenId) {
-        return String.valueOf(screenId);
+    public static String getTransactionTag(int screenId, int index) {
+        return "fragment" + "_" + screenId + "index" + "_" + index;
     }
 
     public int getScreenId() {

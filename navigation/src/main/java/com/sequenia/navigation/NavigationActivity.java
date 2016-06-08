@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Активити для навигации через фрагменты.
  * Является контейнером для всех экранов, представленных фрагментами.
@@ -42,6 +45,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
             initFirstScreen(getSettings().getMainScreenId());
         }
 
+        if(getSettings().hasNavigationMenus()) {
+            initMenus();
+        }
+
         setupScreen();
     }
 
@@ -59,7 +66,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     private void initFirstScreen(int firstScreenId) {
-        String tag = NavigationFragment.getTransactionTag(firstScreenId);
+        String tag = NavigationFragment.getTransactionTag(firstScreenId, getDepth());
         FragmentManager fragmentManager = getSupportFragmentManager();
         NavigationFragment firstScreen = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
@@ -94,6 +101,12 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
+    private void initMenus() {
+        for(NavigationMenu navigationMenu : getSettings().getNavigationMenus()) {
+            navigationMenu.setup(this, getSettings());
+        }
+    }
+
     public void setupScreen() {
         NavigationFragment currentFragment = getCurrentScreen();
         if(currentFragment != null) {
@@ -104,12 +117,28 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     public void updateBackButton(NavigationFragment fragment) {
         if(fragment != null) {
-            ActionBar actionBar = getSupportActionBar();
-            if(actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(fragment.hasBackButton() && getDepth() > 1);
-                actionBar.setHomeButtonEnabled(true);
+            if(getSettings().hasBackButtonLoginMenu()) {
+                updateMenuBackButton(fragment);
+            } else {
+                updateActivityBackButton(fragment);
             }
         }
+    }
+
+    private void updateActivityBackButton(NavigationFragment fragment) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(hasBackButton(fragment));
+            actionBar.setHomeButtonEnabled(true);
+        }
+    }
+
+    public boolean hasBackButton(NavigationFragment fragment) {
+        return fragment.hasBackButton() && getDepth() > 1;
+    }
+
+    private void updateMenuBackButton(NavigationFragment fragment) {
+        getSettings().getBackButtonLogicMenu().updateBackButton(this, fragment);
     }
 
     public void updateTitle(NavigationFragment fragment) {
@@ -136,8 +165,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
         openScreen(screenId, args, 0);
     }
 
-    public void openScreen(int screenId, int depth) {
-        openScreen(screenId, new Bundle(), depth);
+    public void openScreen(int screenId, int index) {
+        openScreen(screenId, new Bundle(), index);
     }
 
     public void openScreen(int screenId) {
@@ -146,7 +175,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     public void openScreen(int screenId, Bundle args) {
         NavigationFragment fragment = getSettings().getFabric().createScreen(screenId, args);
-        String tag = fragment.getTransactionTag();
+        String tag = fragment.getTransactionTag(getDepth());
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -155,8 +184,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void openScreen(int screenId, Bundle args, int depth) {
-        clear(depth);
+    public void openScreen(int screenId, Bundle args, int index) {
+        clear(index);
         openScreen(screenId, args);
     }
 
@@ -164,7 +193,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         clear(0);
     }
 
-    public void clear(int depth) {
+    public void clear(int index) {
         removeBackStackListener();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -172,7 +201,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         int depthAdjustment = getSettings().getDepthAdjustment();
 
         if(fragmentManager.getBackStackEntryCount() > 1) {
-            String name = fragmentManager.getBackStackEntryAt(depthAdjustment + depth).getName();
+            String name = fragmentManager.getBackStackEntryAt(depthAdjustment + index).getName();
             fragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
@@ -264,6 +293,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
         private Integer mainScreenId;
         private Integer menuId;
         private NavigationFragment.NavigationFragmentFabric fabric;
+        private List<NavigationMenu> navigationMenus;
+        private NavigationMenu backButtonLogicMenu;
 
         public Integer getLayoutId() {
             return layoutId;
@@ -337,6 +368,28 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
+        public NavigationActivitySettings addNavigationMenu(NavigationMenu navigationMenu) {
+            if(navigationMenus == null) {
+                navigationMenus = new ArrayList<>();
+            }
+
+            navigationMenus.add(navigationMenu);
+
+            if(navigationMenu.hasBackButtonLogic()) {
+                backButtonLogicMenu = navigationMenu;
+            }
+
+            return this;
+        }
+
+        public List<NavigationMenu> getNavigationMenus() {
+            return navigationMenus;
+        }
+
+        public NavigationMenu getBackButtonLogicMenu() {
+            return backButtonLogicMenu;
+        }
+
         public int getDepthAdjustment() {
             if(hasDashboard()) {
                 return 1;
@@ -375,6 +428,14 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         public boolean hasMainScreenId() {
             return mainScreenId != null;
+        }
+
+        public boolean hasBackButtonLoginMenu() {
+            return backButtonLogicMenu != null;
+        }
+
+        public boolean hasNavigationMenus() {
+            return navigationMenus != null && navigationMenus.size() > 0;
         }
     }
 }
