@@ -98,6 +98,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         NavigationFragment currentFragment = getCurrentScreen();
         if(currentFragment != null) {
             updateBackButton(currentFragment);
+            updateTitle(currentFragment);
         }
     }
 
@@ -108,6 +109,12 @@ public abstract class NavigationActivity extends AppCompatActivity {
                 actionBar.setDisplayHomeAsUpEnabled(fragment.hasBackButton() && getDepth() > 1);
                 actionBar.setHomeButtonEnabled(true);
             }
+        }
+    }
+
+    public void updateTitle(NavigationFragment fragment) {
+        if(fragment != null) {
+            setNavigationTitle(fragment.getTitle());
         }
     }
 

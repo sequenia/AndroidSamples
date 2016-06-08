@@ -18,7 +18,8 @@ public class DashboardFragment extends NavigationFragment {
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
                 .setLayoutId(R.layout.fragment_dashboard)
-                .setHasBackButton(false);
+                .setHasBackButton(false)
+                .setTitle("Главный экран");
     }
 
     @Override

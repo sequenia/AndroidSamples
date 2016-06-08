@@ -114,6 +114,10 @@ public abstract class NavigationFragment extends Fragment {
         return getFragmentSettings().isHasBackButton();
     }
 
+    public String getTitle() {
+        return getFragmentSettings().getTitle();
+    }
+
     /**
      * Здесь нужно настроить фрагмент, например,
      * задать ему id разметки, которая будет в нем отображаться.
@@ -150,6 +154,10 @@ public abstract class NavigationFragment extends Fragment {
         boolean hasBackButton();
     }
 
+    protected interface TitleRule {
+        String getTitle();
+    }
+
     /**
      * Класс для хранения настроек фрагмента
      */
@@ -165,7 +173,28 @@ public abstract class NavigationFragment extends Fragment {
          */
         private BackButtonVisibilityRule backButtonVisibilityRule;
 
+        private TitleRule titleRule;
+
         private Integer menuId;
+
+        public NavigationFragmentSettings setTitle(final String title) {
+            this.titleRule = new TitleRule() {
+                @Override
+                public String getTitle() {
+                    return title == null ? "" : title;
+                }
+            };
+            return this;
+        }
+
+        public String getTitle() {
+            return titleRule == null ? "" : titleRule.getTitle();
+        }
+
+        public NavigationFragmentSettings setTitleRule(TitleRule titleRule) {
+            this.titleRule = titleRule;
+            return this;
+        }
 
         private Integer getLayoutId() {
             return layoutId;

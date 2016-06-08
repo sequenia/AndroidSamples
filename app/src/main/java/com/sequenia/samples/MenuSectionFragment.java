@@ -19,6 +19,12 @@ public class MenuSectionFragment extends NavigationFragment {
         fragmentSettings
                 .setLayoutId(R.layout.fragment_menu_section)
                 .setHasBackButton(true)
+                .setTitleRule(new TitleRule() {
+                    @Override
+                    public String getTitle() {
+                        return "Секция меню";
+                    }
+                })
                 .setMenuId(R.menu.fragment_menu);
     }
 
