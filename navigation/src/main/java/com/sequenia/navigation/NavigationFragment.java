@@ -45,20 +45,7 @@ public abstract class NavigationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Bundle args = getArguments();
-
-        if(args == null) {
-            throw new IllegalStateException("Fragment arguments not set");
-        }
-
-        if(!args.containsKey(ARG_SCREEN_ID)) {
-            throw new IllegalStateException("Fragment screen id not set");
-        }
-
-        // Создание разметки фрагмента. ID разметки обязательно должен быть задан
-        if(!getFragmentSettings().hasLayoutId()) {
-            throw new IllegalStateException("Fragment layoutId not set");
-        }
+        validateSettings();
 
         View view = inflater.inflate(getFragmentSettings().getLayoutId(), container, false);
         onLayoutCreated(inflater, view, savedInstanceState);
@@ -116,6 +103,23 @@ public abstract class NavigationFragment extends Fragment {
 
     public String getTitle() {
         return getFragmentSettings().getTitle();
+    }
+
+    private void validateSettings() {
+        Bundle args = getArguments();
+
+        if(args == null) {
+            throw new IllegalStateException("Fragment arguments not set");
+        }
+
+        if(!args.containsKey(ARG_SCREEN_ID)) {
+            throw new IllegalStateException("Fragment screen id not set");
+        }
+
+        // Создание разметки фрагмента. ID разметки обязательно должен быть задан
+        if(!getFragmentSettings().hasLayoutId()) {
+            throw new IllegalStateException("Fragment layoutId not set");
+        }
     }
 
     /**

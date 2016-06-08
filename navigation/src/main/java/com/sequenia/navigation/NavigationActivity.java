@@ -54,6 +54,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(getSettings().getToolbarId());
+
+        if(toolbar == null) {
+            throw new IllegalStateException("Toolbar с заданным id не найден в разметке");
+        }
+
         setSupportActionBar(toolbar);
 
         if(getSettings().hasCustomTitle()) {
@@ -62,6 +67,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
             }
             customTitle = (TextView) findViewById(getSettings().getToolbarTitleId());
+
+            if(customTitle == null) {
+                throw new IllegalStateException("TextView для заголовка с указанным id не найден в разметке");
+            }
         }
     }
 
@@ -267,19 +276,19 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     private void validateSettings() {
         if(!getSettings().hasFabric()) {
-            throw new IllegalStateException("Fragment fabric not set");
+            throw new IllegalStateException("Не задана фабрика фрагментов");
         }
 
         if(!getSettings().hasFragmentContainerId()) {
-            throw new IllegalStateException("Fragment container id not set");
+            throw new IllegalStateException("Не задан id контейнера для фрагментов");
         }
 
         if(!getSettings().hasLayoutId()) {
-            throw new IllegalStateException("Activity layoutId not set");
+            throw new IllegalStateException("Не задана разметка Активности");
         }
 
         if(!getSettings().hasDashboard() && !getSettings().hasMainScreenId()) {
-            throw new IllegalStateException("Activity mainScreenId or dashboardId not set");
+            throw new IllegalStateException("DashboardId или MainScreenId должны быть заданы");
         }
     }
 
