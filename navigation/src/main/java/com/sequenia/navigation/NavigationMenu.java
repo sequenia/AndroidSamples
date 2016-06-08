@@ -14,4 +14,8 @@ public interface NavigationMenu {
     void setup(AppCompatActivity activity, NavigationActivity.NavigationActivitySettings settings);
 
     void updateBackButton(NavigationActivity navigationActivity, NavigationFragment fragment);
+
+    boolean isOpen();
+
+    void close();
 }

@@ -66,7 +66,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     private void initFirstScreen(int firstScreenId) {
-        String tag = NavigationFragment.getTransactionTag(firstScreenId, getDepth());
+        String tag = NavigationFragment.getTransactionTag(firstScreenId, 0);
         FragmentManager fragmentManager = getSupportFragmentManager();
         NavigationFragment firstScreen = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
@@ -200,7 +200,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         int depthAdjustment = getSettings().getDepthAdjustment();
 
-        if(fragmentManager.getBackStackEntryCount() > 1) {
+        if(fragmentManager.getBackStackEntryCount() > depthAdjustment) {
             String name = fragmentManager.getBackStackEntryAt(depthAdjustment + index).getName();
             fragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
@@ -210,10 +210,33 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(getDepth() > 1) {
-            super.onBackPressed();
-        } else {
-            finish();
+        boolean menuOpened = false;
+
+        if(getSettings().hasNavigationMenus()) {
+            for(NavigationMenu navigationMenu : getSettings().getNavigationMenus()) {
+                boolean currentMenuOpened = navigationMenu.isOpen();
+
+                if(currentMenuOpened) {
+                    navigationMenu.close();
+                }
+
+                menuOpened = menuOpened || currentMenuOpened;
+            }
+        }
+
+        if(!menuOpened) {
+            if (getDepth() > 1) {
+                closeLastScreen();
+            } else {
+                finish();
+            }
+        }
+    }
+
+    public void closeLastScreen() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(fragmentManager.getBackStackEntryCount() > getSettings().getDepthAdjustment()) {
+            fragmentManager.popBackStack();
         }
     }
 
