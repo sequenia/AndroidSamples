@@ -95,9 +95,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
     public void setupScreen() {
         NavigationFragment currentFragment = getCurrentScreen();
         if(currentFragment != null) {
+            updateBackButton(currentFragment);
+        }
+    }
+
+    public void updateBackButton(NavigationFragment fragment) {
+        if(fragment != null) {
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(currentFragment.hasBackButton());
+                actionBar.setDisplayHomeAsUpEnabled(fragment.hasBackButton());
                 actionBar.setHomeButtonEnabled(true);
             }
         }
@@ -278,7 +284,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return fabric;
         }
 
-        public NavigationActivitySettings setFabric(NavigationFragment.NavigationFragmentFabric fabric) {
+        public NavigationActivitySettings setFragmentFabric(NavigationFragment.NavigationFragmentFabric fabric) {
             this.fabric = fabric;
             return this;
         }

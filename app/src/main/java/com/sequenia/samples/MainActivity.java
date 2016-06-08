@@ -18,7 +18,7 @@ public class MainActivity extends NavigationActivity {
                 .setToolbarTitleId(R.id.toolbar_title)
                 .setMenuId(R.menu.main_menu)
                 .setDashboardScreenId(SCREEN_DASHBOARD)
-                .setFabric(new NavigationFragment.NavigationFragmentFabric() {
+                .setFragmentFabric(new NavigationFragment.NavigationFragmentFabric() {
                     @Override
                     public NavigationFragment newInstance(int sectionId) {
                         NavigationFragment fragment = null;
