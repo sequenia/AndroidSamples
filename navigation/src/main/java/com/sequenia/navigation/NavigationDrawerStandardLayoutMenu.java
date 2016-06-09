@@ -2,6 +2,7 @@ package com.sequenia.navigation;
 
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseIntArray;
 import android.view.MenuItem;
 
 /**
@@ -16,17 +17,19 @@ public abstract class NavigationDrawerStandardLayoutMenu extends NavigationDrawe
     }
 
     @Override
-    public void setup(NavigationActivity activity, NavigationActivity.NavigationActivitySettings settings) {
-        super.setup(activity, settings);
-
+    public void bindMenuItems(final NavigationActivity activity, final SparseIntArray screensByMenuItems) {
         getDrawerView().setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                close();
-                return NavigationDrawerStandardLayoutMenu.this.onNavigationItemSelectedListener(item);
+                int screenId = screensByMenuItems.get(item.getItemId(), -1);
+
+                if(screenId != -1) {
+                    activity.openScreenWithClear(screenId);
+                    close();
+                }
+
+                return false;
             }
         });
     }
-
-    public abstract boolean onNavigationItemSelectedListener(MenuItem item);
 }

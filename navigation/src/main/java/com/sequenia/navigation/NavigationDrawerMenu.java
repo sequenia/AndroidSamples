@@ -5,13 +5,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseIntArray;
 import android.view.MenuItem;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by chybakut2004 on 08.06.16.
  */
 
-public abstract class NavigationDrawerMenu implements NavigationMenu {
+public abstract class NavigationDrawerMenu extends NavigationMenuWithSettings {
 
     private int drawerLayoutId;
     private int drawerViewId;
@@ -35,7 +38,7 @@ public abstract class NavigationDrawerMenu implements NavigationMenu {
     }
 
     @Override
-    public void setup(NavigationActivity activity, NavigationActivity.NavigationActivitySettings settings) {
+    public void setupLayout(NavigationActivity activity, NavigationActivity.NavigationActivitySettings settings) {
         ActionBar actionBar = activity.getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -83,13 +86,5 @@ public abstract class NavigationDrawerMenu implements NavigationMenu {
 
     public NavigationView getDrawerView() {
         return drawerView;
-    }
-
-    public ActionBarDrawerToggle getToggle() {
-        return toggle;
-    }
-
-    public DrawerLayout getDrawerLayout() {
-        return drawerLayout;
     }
 }
