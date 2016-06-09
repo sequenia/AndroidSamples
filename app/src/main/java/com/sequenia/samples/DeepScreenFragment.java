@@ -29,7 +29,7 @@ public class DeepScreenFragment extends NavigationFragment {
         openMenuSectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_MENU_SECTION);
+                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_FIRST_MENU_SECTION);
             }
         });
 

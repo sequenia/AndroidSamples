@@ -4,20 +4,15 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/drawer_home"
+            android:id="@+id/drawer_section_1"
             android:checked="true"
             android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-            android:title="ДОМОЙ"/>
+            android:title="Секция 1"/>
 
         <item
-            android:id="@+id/drawer_favourite"
+            android:id="@+id/drawer_section_2"
             android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-            android:title="Избранное"/>
-
-        <item
-            android:id="@+id/drawer_settings"
-            android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-            android:title="Настройки"/>
+            android:title="Секция 2"/>
 
     </group>
 </menu>

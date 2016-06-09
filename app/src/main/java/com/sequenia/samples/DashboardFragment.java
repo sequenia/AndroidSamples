@@ -29,7 +29,7 @@ public class DashboardFragment extends NavigationFragment {
         openSectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_MENU_SECTION);
+                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_FIRST_MENU_SECTION);
             }
         });
     }

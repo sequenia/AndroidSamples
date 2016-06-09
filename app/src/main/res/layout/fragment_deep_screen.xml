@@ -22,7 +22,7 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:text="Закрыть все и открыть секцию меню"
+        android:text="Закрыть все и открыть секцию меню 1"
         android:id="@+id/open_section_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

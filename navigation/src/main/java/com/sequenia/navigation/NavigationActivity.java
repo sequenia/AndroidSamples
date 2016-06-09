@@ -264,6 +264,13 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(getSettings().hasBackButtonLoginMenu()) {
+            if(getSettings().getBackButtonLogicMenu().onOptionsItemSelected(item)) {
+                return true;
+            }
+        }
+
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
