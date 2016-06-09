@@ -1,10 +1,10 @@
 package com.sequenia.samples;
 
-import android.view.MenuItem;
+import android.graphics.Color;
+import android.view.View;
 
 import com.sequenia.navigation.NavigationActivity;
 import com.sequenia.navigation.NavigationDrawerCustomLayoutMenu;
-import com.sequenia.navigation.NavigationDrawerStandardLayoutMenu;
 import com.sequenia.navigation.NavigationFragment;
 
 public class MainActivity extends NavigationActivity {
@@ -25,11 +25,22 @@ public class MainActivity extends NavigationActivity {
                 .setDashboardScreenId(SCREEN_DASHBOARD)
                 .addNavigationMenu(new NavigationDrawerCustomLayoutMenu(
                         R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
+
                     @Override
                     public void bindNavigationItems(NavigationMenuSettings menuSettings) {
                         menuSettings
                                 .addNavigationItem(R.id.drawer_section_1, SCREEN_FIRST_MENU_SECTION)
                                 .addNavigationItem(R.id.drawer_section_2, SCREEN_SECOND_MENU_SECTION);
+                    }
+
+                    @Override
+                    public void selectItem(View view) {
+                        view.setBackgroundColor(Color.GREEN);
+                    }
+
+                    @Override
+                    public void deselectItem(View view) {
+                        view.setBackgroundColor(Color.TRANSPARENT);
                     }
                 })
                 .setFragmentFabric(new NavigationFragment.NavigationFragmentFabric() {

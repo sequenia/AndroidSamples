@@ -1,6 +1,7 @@
 package com.sequenia.navigation;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.View;
 
@@ -12,7 +13,9 @@ import java.util.HashMap;
 
 public abstract class NavigationDrawerCustomLayoutMenu extends NavigationDrawerMenu {
 
-    public NavigationMenuSettings settings;
+    private NavigationMenuSettings settings;
+    private SparseArray<View> menuItemViews;
+    private Integer currentScreenId;
 
     public NavigationDrawerCustomLayoutMenu(int drawerLayoutId, int drawerViewId, int openStrId, int closeStrId) {
         super(drawerLayoutId, drawerViewId, openStrId, closeStrId);
@@ -24,25 +27,39 @@ public abstract class NavigationDrawerCustomLayoutMenu extends NavigationDrawerM
 
         bindNavigationItems(getSettings());
 
+        menuItemViews = new SparseArray<>();
         SparseIntArray items = getSettings().getNavigationItems();
+
         for(int i = 0; i < items.size(); i++) {
             int viewId = items.keyAt(i);
-            final int screenId = items.get(viewId);
+            int screenId = items.get(viewId);
 
-            View view = activity.findViewById(viewId);
-            if(view != null) {
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        close();
-                        activity.openScreenWithClear(screenId);
-                    }
-                });
+            final View itemView = activity.findViewById(viewId);
+            if(itemView != null) {
+                bindMenuItem(screenId, itemView, activity);
             }
         }
     }
 
+    private void bindMenuItem(final int screenId, final View itemView, final NavigationActivity activity) {
+        menuItemViews.put(screenId, itemView);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(currentScreenId != null) {
+                    deselectItem(menuItemViews.get(currentScreenId));
+                }
+                selectItem(itemView);
+                currentScreenId = screenId;
+                close();
+                activity.openScreenWithClear(screenId);
+            }
+        });
+    }
+
     public abstract void bindNavigationItems(NavigationMenuSettings menuSettings);
+    public abstract void selectItem(View view);
+    public abstract void deselectItem(View view);
 
     public NavigationMenuSettings getSettings() {
         if(settings == null) {
@@ -66,7 +83,7 @@ public abstract class NavigationDrawerCustomLayoutMenu extends NavigationDrawerM
             return this;
         }
 
-        public SparseIntArray getNavigationItems() {
+        private SparseIntArray getNavigationItems() {
             if(navigationItems == null) {
                 navigationItems = new SparseIntArray();
             }
