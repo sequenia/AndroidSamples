@@ -80,7 +80,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         NavigationFragment firstScreen = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
         if(firstScreen == null) {
-            firstScreen = getSettings().getFabric().createScreen(firstScreenId);
+            firstScreen = getSettings().getFabric().createScreen(firstScreenId, new Bundle());
             fragmentManager
                     .beginTransaction()
                     .add(getSettings().getFragmentContainerId(), firstScreen, tag)
