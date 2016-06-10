@@ -24,8 +24,7 @@ public class MainActivity extends NavigationActivity {
                 .setToolbarId(R.id.toolbar)
                 .setToolbarTitleId(R.id.toolbar_title)
                 .setMenuId(R.menu.main_menu)
-                //.setDashboardScreenId(SCREEN_DASHBOARD)
-                .setMainScreenId(SCREEN_SECOND_MENU_SECTION)
+                .setDashboardScreenId(SCREEN_DASHBOARD)
                 .setNavigationMenu(new NavigationMenu() {
                     @Override
                     public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
