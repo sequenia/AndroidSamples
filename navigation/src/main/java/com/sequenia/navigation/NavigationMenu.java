@@ -72,21 +72,16 @@ public abstract class NavigationMenu {
         }
     }
 
-    public void selectByScreenId(int screenId) {
-        int menuItemId = getSettings().getMenuItemsByScreens().get(screenId, -1);
-        if(menuItemId != -1) {
-            select(menuItemId);
-        }
-    }
-
-    public void select(int menuItemId) {
+    public void select(Integer menuItemId) {
         for(NavigationMenuLayout layout : getSettings().getLayouts()) {
             if (currentSelectedItem != null) {
                 layout.deselectMenuItem(currentSelectedItem);
             }
 
             currentSelectedItem = menuItemId;
-            layout.selectMenuItem(currentSelectedItem);
+            if(currentSelectedItem != null) {
+                layout.selectMenuItem(currentSelectedItem);
+            }
         }
     }
 
@@ -106,6 +101,11 @@ public abstract class NavigationMenu {
         }
 
         return false;
+    }
+
+    public Integer getMenuItemForScreen(int screenId) {
+        int menuItemId = getSettings().getMenuItemsByScreens().get(screenId, -1);
+        return menuItemId == -1 ? currentSelectedItem : menuItemId;
     }
 
     public abstract void setupSettings(NavigationMenuSettings navigationMenuSettings);

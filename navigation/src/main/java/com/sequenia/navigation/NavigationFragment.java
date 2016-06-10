@@ -28,6 +28,8 @@ public abstract class NavigationFragment extends Fragment {
      */
     private static final String ARG_SCREEN_ID = "ArgScreenId";
 
+    private static final String ARG_MENU_ITEM_ID = "ArgMenuItemId";
+
     /**
      * Настройки фрагмента.
      */
@@ -45,6 +47,18 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         args.putInt(ARG_SCREEN_ID,  screenId);
+
+        setArguments(args);
+    }
+
+    private void setMenuItemId(int menuItemId) {
+        Bundle args = getArguments();
+
+        if(args == null) {
+            args = new Bundle();
+        }
+
+        args.putInt(ARG_MENU_ITEM_ID, menuItemId);
 
         setArguments(args);
     }
@@ -143,6 +157,11 @@ public abstract class NavigationFragment extends Fragment {
         return getArguments().getInt(ARG_SCREEN_ID);
     }
 
+    public Integer getMenuItemId() {
+        int itemId = getArguments().getInt(ARG_MENU_ITEM_ID, -1);
+        return itemId == -1 ? null : itemId;
+    }
+
     /**
      * @return true, если в меню этого фрагмента должна быть кнопка назад в тулбаре.
      */
@@ -194,10 +213,13 @@ public abstract class NavigationFragment extends Fragment {
          * @param args аргументы, которые будут переданы во фрагмент
          * @return созданный экземпляр экрана с заданным ID и аргументами.
          */
-        NavigationFragment createScreen(int screenId, Bundle args) {
+        NavigationFragment createScreen(int screenId, Bundle args, Integer menuItemId) {
             NavigationFragment fragment = newInstance(screenId);
             fragment.setArguments(args);
             fragment.setScreenId(screenId);
+            if(menuItemId != null) {
+                fragment.setMenuItemId(menuItemId);
+            }
             return fragment;
         }
     }

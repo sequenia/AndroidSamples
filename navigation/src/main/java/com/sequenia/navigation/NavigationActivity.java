@@ -77,12 +77,20 @@ public abstract class NavigationActivity extends AppCompatActivity {
         NavigationFragment firstScreen = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
         if(firstScreen == null) {
-            firstScreen = getSettings().getFabric().createScreen(firstScreenId, new Bundle());
+            firstScreen = getSettings().getFabric().createScreen(firstScreenId, new Bundle(), getMenuItemForScreen(firstScreenId));
             fragmentManager
                     .beginTransaction()
                     .add(getSettings().getFragmentContainerId(), firstScreen, tag)
                     .addToBackStack(tag)
                     .commit();
+        }
+    }
+
+    private Integer getMenuItemForScreen(int screenId) {
+        if(getSettings().hasDashboard() && screenId == getSettings().getDashboardScreenId()) {
+            return null;
+        } else {
+            return getSettings().getNavigationMenu().getMenuItemForScreen(screenId);
         }
     }
 
@@ -139,9 +147,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     private void updateMenuSelection(NavigationFragment fragment) {
-        int screenId = fragment.getScreenId();
         if(getSettings().hasNavigationMenu()) {
-            getSettings().getNavigationMenu().selectByScreenId(screenId);
+            getSettings().getNavigationMenu().select(fragment.getMenuItemId());
         }
     }
 
@@ -182,7 +189,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     public void openScreen(int screenId, Bundle args) {
-        NavigationFragment fragment = getSettings().getFabric().createScreen(screenId, args);
+        NavigationFragment fragment = getSettings().getFabric().createScreen(screenId, args, getMenuItemForScreen(screenId));
         String tag = fragment.getTransactionTag(getDepth());
 
         getSupportFragmentManager()
@@ -260,7 +267,6 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if(getSettings().getNavigationMenu().hasBackButtonLogic()) {
             if(getSettings().getNavigationMenu().onOptionsItemSelected(item)) {
                 return true;
