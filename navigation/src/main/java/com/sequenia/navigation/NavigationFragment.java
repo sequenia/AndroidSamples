@@ -49,6 +49,10 @@ public abstract class NavigationFragment extends Fragment {
         setArguments(args);
     }
 
+    private void setMenuItemId(int menuItemId) {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -139,7 +143,7 @@ public abstract class NavigationFragment extends Fragment {
     /**
      * @return id фрагмента, заданный константой в фабрике
      */
-    private int getScreenId() {
+    public int getScreenId() {
         return getArguments().getInt(ARG_SCREEN_ID);
     }
 

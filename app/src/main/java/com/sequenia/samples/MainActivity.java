@@ -1,8 +1,11 @@
 package com.sequenia.samples;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+
 import com.sequenia.navigation.NavigationActivity;
 import com.sequenia.navigation.NavigationDrawerCustomLayoutMenu;
-import com.sequenia.navigation.NavigationDrawerStandardLayoutMenu;
 import com.sequenia.navigation.NavigationFragment;
 
 public class MainActivity extends NavigationActivity {
@@ -38,7 +41,19 @@ public class MainActivity extends NavigationActivity {
                     public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
                         navigationMenuSettings
                                 .bindMenuItem(R.id.drawer_section_1, SCREEN_FIRST_MENU_SECTION)
-                                .bindMenuItem(R.id.drawer_section_2, SCREEN_SECOND_MENU_SECTION);
+                                .bindMenuItem(R.id.drawer_section_2, SCREEN_SECOND_MENU_SECTION)
+                                .bindScreen(SCREEN_FIRST_MENU_SECTION, R.id.drawer_section_1)
+                                .bindScreen(SCREEN_SECOND_MENU_SECTION, R.id.drawer_section_2);
+                    }
+
+                    @Override
+                    public void selectMenuItem(View view) {
+                        view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+                    }
+
+                    @Override
+                    public void deselectMenuItem(View view) {
+                        view.setBackgroundColor(Color.TRANSPARENT);
                     }
                 })
                 .setFragmentFabric(new NavigationFragment.NavigationFragmentFabric() {

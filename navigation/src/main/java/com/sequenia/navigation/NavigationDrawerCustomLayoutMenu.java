@@ -38,4 +38,23 @@ public abstract class NavigationDrawerCustomLayoutMenu extends NavigationDrawerM
             }
         }
     }
+
+    @Override
+    public void selectMenuItem(int menuItemId) {
+        View view = menuItems.get(menuItemId);
+        if(view != null) {
+            selectMenuItem(view);
+        }
+    }
+
+    @Override
+    public void deselectMenuItem(int menuItemId) {
+        View view = menuItems.get(menuItemId);
+        if(view != null) {
+            deselectMenuItem(view);
+        }
+    }
+
+    public abstract void selectMenuItem(View view);
+    public abstract void deselectMenuItem(View view);
 }

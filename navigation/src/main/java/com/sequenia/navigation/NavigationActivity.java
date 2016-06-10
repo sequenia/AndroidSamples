@@ -121,6 +121,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         if(currentFragment != null) {
             updateBackButton(currentFragment);
             updateTitle(currentFragment);
+            updateMenuSelection(currentFragment);
         }
     }
 
@@ -139,6 +140,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(hasBackButton(fragment));
             actionBar.setHomeButtonEnabled(true);
+        }
+    }
+
+    private void updateMenuSelection(NavigationFragment fragment) {
+        int screenId = fragment.getScreenId();
+        if(getSettings().hasNavigationMenus()) {
+            for(NavigationMenu navigationMenu : getSettings().getNavigationMenus()) {
+                navigationMenu.selectByScreenId(screenId);
+            }
         }
     }
 

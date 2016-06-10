@@ -32,4 +32,14 @@ public abstract class NavigationDrawerStandardLayoutMenu extends NavigationDrawe
             }
         });
     }
+
+    @Override
+    public void selectMenuItem(int menuItemId) {
+        getDrawerView().setCheckedItem(menuItemId);
+    }
+
+    @Override
+    public void deselectMenuItem(int menuItemId) {
+
+    }
 }
