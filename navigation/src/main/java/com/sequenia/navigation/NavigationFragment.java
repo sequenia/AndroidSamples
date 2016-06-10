@@ -90,7 +90,7 @@ public abstract class NavigationFragment extends Fragment {
         if(activity instanceof NavigationActivity) {
             return (NavigationActivity) activity;
         } else {
-            throw new IllegalStateException("Activity is not NavigationActivity");
+            throw new IllegalStateException("Activity must extend from NavigationActivity");
         }
     }
 
@@ -267,10 +267,20 @@ public abstract class NavigationFragment extends Fragment {
          */
         private BackButtonVisibilityRule backButtonVisibilityRule;
 
+        /**
+         * Хранит правило задания заголовка
+         */
         private TitleRule titleRule;
 
+        /**
+         * ID Меню тулбара
+         */
         private Integer menuId;
 
+        /**
+         * Задает правило, которое возвращает переданный заголовок
+         * @param title заголовок
+         */
         public NavigationFragmentSettings setTitle(final String title) {
             this.titleRule = new TitleRule() {
                 @Override
@@ -281,24 +291,42 @@ public abstract class NavigationFragment extends Fragment {
             return this;
         }
 
+        /**
+         * @return заголовок фрагмента
+         */
         public String getTitle() {
             return titleRule == null ? "" : titleRule.getTitle();
         }
 
+        /**
+         * Задает правило возвращения заголовка фрагмента
+         * @param titleRule правило
+         */
         public NavigationFragmentSettings setTitleRule(TitleRule titleRule) {
             this.titleRule = titleRule;
             return this;
         }
 
+        /**
+         * @return Возвращает id разметки фрагмента
+         */
         private Integer getLayoutId() {
             return layoutId;
         }
 
+        /**
+         * Задает ID разметки фрагмента
+         * @param layoutId id разметки
+         */
         public NavigationFragmentSettings setLayoutId(Integer layoutId) {
             this.layoutId = layoutId;
             return this;
         }
 
+        /**
+         * Задает видимость кнопки назад у фрагмента
+         * @param hasBackButton видимость кнопки назад
+         */
         public NavigationFragmentSettings setHasBackButton(final boolean hasBackButton) {
             this.backButtonVisibilityRule = new BackButtonVisibilityRule() {
                 @Override
@@ -309,27 +337,48 @@ public abstract class NavigationFragment extends Fragment {
             return this;
         }
 
+        /**
+         * Задает правило для отображения кнопки назад
+         * @param backButtonVisibilityRule правило отображения пнопки назад
+         */
         public NavigationFragmentSettings setBackButtonVisibilityRule(BackButtonVisibilityRule backButtonVisibilityRule) {
             this.backButtonVisibilityRule = backButtonVisibilityRule;
             return this;
         }
 
+        /**
+         * @return true, если должна быть показана кнопка назад
+         */
         public boolean isHasBackButton() {
             return backButtonVisibilityRule != null && backButtonVisibilityRule.hasBackButton();
         }
 
+        /**
+         * @return ID меню в тулбаре
+         */
         public Integer getMenuId() {
             return menuId;
         }
 
-        public void setMenuId(Integer menuId) {
+        /**
+         * Задает id меню в тулбаре
+         * @param menuId
+         */
+        public NavigationFragmentSettings setMenuId(Integer menuId) {
             this.menuId = menuId;
+            return this;
         }
 
+        /**
+         * @return true, если задано меню в тулбаре
+         */
         public boolean hasMenu() {
             return menuId != null;
         }
 
+        /**
+         * @return true, если задана разметка фрагмента
+         */
         public boolean hasLayoutId() {
             return layoutId != null;
         }
