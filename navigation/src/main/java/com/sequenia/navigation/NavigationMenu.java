@@ -3,6 +3,9 @@ package com.sequenia.navigation;
 import android.util.SparseIntArray;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by chybakut2004 on 09.06.16.
  */
@@ -22,6 +25,46 @@ public abstract class NavigationMenu {
         bindMenuItems(activity, getSettings().getScreensByMenuItems());
     }
 
+    public void bindMenuItems(NavigationActivity activity, SparseIntArray screensByMenuItems) {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            layout.bindMenuItems(activity, getSettings().getScreensByMenuItems());
+        }
+    }
+
+    public void setupLayout(NavigationActivity activity, NavigationActivity.NavigationActivitySettings settings) {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            layout.setupLayout(activity, settings);
+        }
+    }
+
+    public boolean hasBackButtonLogic() {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            if(layout.hasBackButtonLogic()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isOpen() {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            if(layout.isOpen()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void close() {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            if(layout.isOpen()) {
+                layout.close();
+            }
+        }
+    }
+
     private void initSettings() {
         if(settings == null) {
             settings = new NavigationMenuSettings();
@@ -37,29 +80,41 @@ public abstract class NavigationMenu {
     }
 
     public void select(int menuItemId) {
-        if(currentSelectedItem != null) {
-            deselectMenuItem(currentSelectedItem);
-        }
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            if (currentSelectedItem != null) {
+                layout.deselectMenuItem(currentSelectedItem);
+            }
 
-        currentSelectedItem = menuItemId;
-        selectMenuItem(currentSelectedItem);
+            currentSelectedItem = menuItemId;
+            layout.selectMenuItem(currentSelectedItem);
+        }
     }
 
-    public abstract void setupLayout(NavigationActivity activity, NavigationActivity.NavigationActivitySettings settings);
-    public abstract void bindMenuItems(NavigationActivity activity, SparseIntArray screensByMenuItems);
+    public void updateBackButton(NavigationActivity navigationActivity, NavigationFragment fragment) {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            if(layout.hasBackButtonLogic()) {
+                layout.updateBackButton(navigationActivity, fragment);
+            }
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
+            if(layout.hasBackButtonLogic() && layout.onOptionsItemSelected(item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public abstract void setupSettings(NavigationMenuSettings navigationMenuSettings);
-    public abstract boolean hasBackButtonLogic();
-    public abstract void selectMenuItem(int menuItemId);
-    public abstract void deselectMenuItem(int menuItemId);
-    public abstract void updateBackButton(NavigationActivity navigationActivity, NavigationFragment fragment);
-    public abstract boolean isOpen();
-    public abstract void close();
-    public abstract boolean onOptionsItemSelected(MenuItem item);
 
     public class NavigationMenuSettings {
 
         private SparseIntArray screensByMenuItems;
         private SparseIntArray menuItemsByScreens;
+        private List<NavigationMenuLayout> layouts;
 
         public NavigationMenuSettings bindMenuItem(int menuItemId, int screenId) {
             getScreensByMenuItems().put(menuItemId, screenId);
@@ -68,6 +123,11 @@ public abstract class NavigationMenu {
 
         public NavigationMenuSettings bindScreen(int screenId, int menuItemId) {
             getMenuItemsByScreens().put(screenId, menuItemId);
+            return this;
+        }
+
+        public NavigationMenuSettings addLayout(NavigationMenuLayout layout) {
+            getLayouts().add(layout);
             return this;
         }
 
@@ -85,6 +145,14 @@ public abstract class NavigationMenu {
             }
 
             return menuItemsByScreens;
+        }
+
+        public List<NavigationMenuLayout> getLayouts() {
+            if(layouts == null) {
+                layouts = new ArrayList<>();
+            }
+
+            return layouts;
         }
     }
 }

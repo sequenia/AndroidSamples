@@ -10,9 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Активити для навигации через фрагменты.
  * Является контейнером для всех экранов, представленных фрагментами.
@@ -45,8 +42,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
             initFirstScreen(getSettings().getMainScreenId());
         }
 
-        if(getSettings().hasNavigationMenus()) {
-            initMenus();
+        if(getSettings().hasNavigationMenu()) {
+            initNavigationMenu();
         }
 
         setupScreen();
@@ -110,10 +107,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    private void initMenus() {
-        for(NavigationMenu navigationMenu : getSettings().getNavigationMenus()) {
-            navigationMenu.setup(this, getSettings());
-        }
+    private void initNavigationMenu() {
+        getSettings().getNavigationMenu().setup(this, getSettings());
     }
 
     public void setupScreen() {
@@ -127,8 +122,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     public void updateBackButton(NavigationFragment fragment) {
         if(fragment != null) {
-            if(getSettings().hasBackButtonLoginMenu()) {
-                updateMenuBackButton(fragment);
+            if(getSettings().hasBackButtonLogicMenu()) {
+                getSettings().getNavigationMenu().updateBackButton(this, fragment);
             } else {
                 updateActivityBackButton(fragment);
             }
@@ -145,19 +140,13 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     private void updateMenuSelection(NavigationFragment fragment) {
         int screenId = fragment.getScreenId();
-        if(getSettings().hasNavigationMenus()) {
-            for(NavigationMenu navigationMenu : getSettings().getNavigationMenus()) {
-                navigationMenu.selectByScreenId(screenId);
-            }
+        if(getSettings().hasNavigationMenu()) {
+            getSettings().getNavigationMenu().selectByScreenId(screenId);
         }
     }
 
     public boolean hasBackButton(NavigationFragment fragment) {
         return fragment.hasBackButton() && getDepth() > 1;
-    }
-
-    private void updateMenuBackButton(NavigationFragment fragment) {
-        getSettings().getBackButtonLogicMenu().updateBackButton(this, fragment);
     }
 
     public void updateTitle(NavigationFragment fragment) {
@@ -231,15 +220,12 @@ public abstract class NavigationActivity extends AppCompatActivity {
     public void onBackPressed() {
         boolean menuOpened = false;
 
-        if(getSettings().hasNavigationMenus()) {
-            for(NavigationMenu navigationMenu : getSettings().getNavigationMenus()) {
-                boolean currentMenuOpened = navigationMenu.isOpen();
+        if(getSettings().hasNavigationMenu()) {
+            NavigationMenu navigationMenu = getSettings().getNavigationMenu();
+            menuOpened = navigationMenu.isOpen();
 
-                if(currentMenuOpened) {
-                    navigationMenu.close();
-                }
-
-                menuOpened = menuOpened || currentMenuOpened;
+            if(menuOpened) {
+                navigationMenu.close();
             }
         }
 
@@ -275,8 +261,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(getSettings().hasBackButtonLoginMenu()) {
-            if(getSettings().getBackButtonLogicMenu().onOptionsItemSelected(item)) {
+        if(getSettings().getNavigationMenu().hasBackButtonLogic()) {
+            if(getSettings().getNavigationMenu().onOptionsItemSelected(item)) {
                 return true;
             }
         }
@@ -342,8 +328,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         private Integer mainScreenId;
         private Integer menuId;
         private NavigationFragment.NavigationFragmentFabric fabric;
-        private List<NavigationMenu> navigationMenus;
-        private NavigationMenu backButtonLogicMenu;
+        private NavigationMenu navigationMenu;
 
         public Integer getLayoutId() {
             return layoutId;
@@ -417,26 +402,13 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
-        public NavigationActivitySettings addNavigationMenu(NavigationMenu navigationMenu) {
-            if(navigationMenus == null) {
-                navigationMenus = new ArrayList<>();
-            }
-
-            navigationMenus.add(navigationMenu);
-
-            if(navigationMenu.hasBackButtonLogic()) {
-                backButtonLogicMenu = navigationMenu;
-            }
-
+        public NavigationActivitySettings setNavigationMenu(NavigationMenu navigationMenu) {
+            this.navigationMenu = navigationMenu;
             return this;
         }
 
-        public List<NavigationMenu> getNavigationMenus() {
-            return navigationMenus;
-        }
-
-        public NavigationMenu getBackButtonLogicMenu() {
-            return backButtonLogicMenu;
+        public NavigationMenu getNavigationMenu() {
+            return navigationMenu;
         }
 
         public int getDepthAdjustment() {
@@ -479,12 +451,12 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return mainScreenId != null;
         }
 
-        public boolean hasBackButtonLoginMenu() {
-            return backButtonLogicMenu != null;
+        public boolean hasNavigationMenu() {
+            return navigationMenu != null;
         }
 
-        public boolean hasNavigationMenus() {
-            return navigationMenus != null && navigationMenus.size() > 0;
+        public boolean hasBackButtonLogicMenu() {
+            return navigationMenu.hasBackButtonLogic();
         }
     }
 }
