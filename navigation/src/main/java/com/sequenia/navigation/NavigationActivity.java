@@ -18,8 +18,19 @@ import android.widget.TextView;
 
 public abstract class NavigationActivity extends AppCompatActivity {
 
+    /**
+     * Настройки навигационного активити
+     */
     private NavigationActivitySettings settings;
+
+    /**
+     * View для заголовка
+     */
     private TextView customTitle;
+
+    /**
+     * Слушатель изменения стека транзакций фрагментов
+     */
     private FragmentManager.OnBackStackChangedListener onBackStackChangedListener;
 
     @Override
@@ -49,6 +60,18 @@ public abstract class NavigationActivity extends AppCompatActivity {
         setupScreen();
     }
 
+    /**
+     * Данный метод должен быть перегружен в реализации Активити с Навигацией.
+     * В него передается объект настроек, через который можно сконфигурировать Активити
+     * под нужды приложения.
+     * Дальнейшая жизнь Активити зависит от заданных здесь настроек.
+     * @param activitySettings объект настроек для конфигурации.
+     */
+    protected abstract void setup(NavigationActivitySettings activitySettings);
+
+    /**
+     * Настройка кастомного тулбара и кастомного заголовка (если он передан).
+     */
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(getSettings().getToolbarId());
 
@@ -58,6 +81,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        // Если указан TextView для заголовка, нужно сохранить его и при отображении заголовка
+        // обращаться в дальнейшем к нему. При этом стандартный заголовок скрыть
         if(getSettings().hasCustomTitle()) {
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
@@ -71,11 +96,19 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Инициализация первого экрана.
+     * Вызывается при создании Активити и создает переданный стартовый экран, если он еще не создан.
+     * @param firstScreenId id экрана для создания
+     */
     private void initFirstScreen(int firstScreenId) {
+        // Создание тега для транзакции в зависимости от типа экрана и индекса экрана.
+        // Для стартового экрана индекс 0
         String tag = NavigationFragment.getTransactionTag(firstScreenId, 0);
         FragmentManager fragmentManager = getSupportFragmentManager();
         NavigationFragment firstScreen = (NavigationFragment) fragmentManager.findFragmentByTag(tag);
 
+        // Если стартовый экран уже создан, снова его создавать не нужно
         if(firstScreen == null) {
             firstScreen = getSettings().getFabric().createScreen(firstScreenId, new Bundle(), getMenuItemForScreen(firstScreenId));
             fragmentManager
@@ -86,128 +119,30 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    private Integer getMenuItemForScreen(int screenId) {
-        if(getSettings().hasDashboard() && screenId == getSettings().getDashboardScreenId()) {
-            return null;
-        } else {
-            return getSettings().getNavigationMenu().getMenuItemForScreen(screenId);
-        }
-    }
-
-    private void addBackStackListener() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if(onBackStackChangedListener != null) {
-            fragmentManager.removeOnBackStackChangedListener(onBackStackChangedListener);
-        }
-
-        onBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                setupScreen();
-            }
-        };
-        fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
-    }
-
-    private void removeBackStackListener() {
-        if(onBackStackChangedListener != null) {
-            getSupportFragmentManager().removeOnBackStackChangedListener(onBackStackChangedListener);
-        }
-    }
-
-    private void initNavigationMenu() {
-        getSettings().getNavigationMenu().setup(this, getSettings());
-    }
-
-    public void setupScreen() {
-        NavigationFragment currentFragment = getCurrentScreen();
-        if(currentFragment != null) {
-            updateBackButton(currentFragment);
-            updateTitle(currentFragment);
-            updateMenuSelection(currentFragment);
-        }
-    }
-
-    public void updateBackButton(NavigationFragment fragment) {
-        if(fragment != null) {
-            if(getSettings().hasBackButtonLogicMenu()) {
-                getSettings().getNavigationMenu().updateBackButton(this, fragment);
-            } else {
-                updateActivityBackButton(fragment);
-            }
-        }
-    }
-
-    private void updateActivityBackButton(NavigationFragment fragment) {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(hasBackButton(fragment));
-            actionBar.setHomeButtonEnabled(true);
-        }
-    }
-
-    private void updateMenuSelection(NavigationFragment fragment) {
-        if(getSettings().hasNavigationMenu()) {
-            getSettings().getNavigationMenu().select(fragment.getMenuItemId());
-        }
-    }
-
-    public boolean hasBackButton(NavigationFragment fragment) {
-        return fragment.hasBackButton() && getDepth() > 1;
-    }
-
-    public void updateTitle(NavigationFragment fragment) {
-        if(fragment != null) {
-            setNavigationTitle(fragment.getTitle());
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if(getSettings().hasMenu()) {
-            getMenuInflater().inflate(getSettings().getMenuId(), menu);
-            return true;
-        } else {
-            return super.onCreateOptionsMenu(menu);
-        }
-    }
-
-    public void openScreenWithClear(int screenId) {
-        openScreenWithClear(screenId, new Bundle());
-    }
-
-    public void openScreenWithClear(int screenId, Bundle args) {
-        openScreen(screenId, args, 0);
-    }
-
-    public void openScreen(int screenId, int index) {
-        openScreen(screenId, new Bundle(), index);
-    }
-
-    public void openScreen(int screenId) {
-        openScreen(screenId, new Bundle());
-    }
-
+    /**
+     * Открывает экран с переданными в него аргументами
+     * @param screenId ID экрана
+     * @param args аргументы
+     */
     public void openScreen(int screenId, Bundle args) {
+        // Создание экземпляра фрагмента по переданному ID
         NavigationFragment fragment = getSettings().getFabric().createScreen(screenId, args, getMenuItemForScreen(screenId));
+        // Создание тега для транзации из ID фрагмента и текущего количества экранов
         String tag = fragment.getTransactionTag(getDepth());
 
+        // Замена текущего экрана новым экраном.
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(getSettings().getFragmentContainerId(), fragment, tag)
-                .addToBackStack(tag)
+                .addToBackStack(tag) // Добавление в стек для удобного возвращения к предыдущему экрану
                 .commit();
     }
 
-    public void openScreen(int screenId, Bundle args, int index) {
-        clear(index);
-        openScreen(screenId, args);
-    }
-
-    public void clear() {
-        clear(0);
-    }
-
+    /**
+     * Очистка экрана вплоть до переданного индекса (самый первый экран добавлен с индексом 0).
+     * Экран с переданным индексом так же удаляется.
+     * @param index индекс
+     */
     public void clear(int index) {
         removeBackStackListener();
 
@@ -223,28 +158,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
         addBackStackListener();
     }
 
-    @Override
-    public void onBackPressed() {
-        boolean menuOpened = false;
-
-        if(getSettings().hasNavigationMenu()) {
-            NavigationMenu navigationMenu = getSettings().getNavigationMenu();
-            menuOpened = navigationMenu.isOpen();
-
-            if(menuOpened) {
-                navigationMenu.close();
-            }
-        }
-
-        if(!menuOpened) {
-            if (getDepth() > 1) {
-                closeLastScreen();
-            } else {
-                finish();
-            }
-        }
-    }
-
+    /**
+     * Закрывает текущий экран
+     */
     public void closeLastScreen() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if(fragmentManager.getBackStackEntryCount() > getSettings().getDepthAdjustment()) {
@@ -252,6 +168,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @return Текущий экран
+     */
     public NavigationFragment getCurrentScreen() {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -265,9 +184,199 @@ public abstract class NavigationActivity extends AppCompatActivity {
         return (NavigationFragment) fragmentManager.findFragmentByTag(lastEntry.getName());
     }
 
+    /**
+     * Открывает экран, предварительно очистив все экраны снизу.
+     * Не удаляется только dashboard.
+     * @param screenId id экрана
+     */
+    public void openScreenWithClear(int screenId) {
+        openScreenWithClear(screenId, new Bundle());
+    }
+
+    /**
+     * Открывает экран, предварительно очистив стек экранов до индекса index.
+     * Экран с индексом index так же удаляется.
+     */
+    public void openScreen(int screenId, Bundle args, int index) {
+        clear(index);
+        openScreen(screenId, args);
+    }
+
+    public void openScreenWithClear(int screenId, Bundle args) {
+        openScreen(screenId, args, 0);
+    }
+
+    public void openScreen(int screenId, int index) {
+        openScreen(screenId, new Bundle(), index);
+    }
+
+    public void openScreen(int screenId) {
+        openScreen(screenId, new Bundle());
+    }
+
+    public void clear() {
+        clear(0);
+    }
+
+    /**
+     * Возвращает ID элемента навигационного меню для указанного экрана.
+     * Алгоритм:
+     *   - Если в меню задан ID элемента для этого экрана - возвращется он.
+     *   - Если не задан - возвращается текущий выделенный элемент меню.
+     *   - Для DASHBOARD всегда возвращается null.
+     * @param screenId - id экрана
+     * @return id элемента меню
+     */
+    private Integer getMenuItemForScreen(int screenId) {
+        if(getSettings().hasDashboard() && screenId == getSettings().getDashboardScreenId()) {
+            return null;
+        } else {
+            return getSettings().getNavigationMenu().getMenuItemForScreen(screenId);
+        }
+    }
+
+    /**
+     * Настройка слушателя стека транзакций для обновления интерфейса при открытии и закрытии экрана
+     */
+    private void addBackStackListener() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(onBackStackChangedListener != null) {
+            fragmentManager.removeOnBackStackChangedListener(onBackStackChangedListener);
+        }
+
+        onBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setupScreen();
+            }
+        };
+        fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
+    }
+
+    /**
+     * Удаляет слушатель стека фрагментов
+     */
+    private void removeBackStackListener() {
+        if(onBackStackChangedListener != null) {
+            getSupportFragmentManager().removeOnBackStackChangedListener(onBackStackChangedListener);
+        }
+    }
+
+    /**
+     * Настройка навигационного меню Активити
+     */
+    private void initNavigationMenu() {
+        getSettings().getNavigationMenu().setup(this, getSettings());
+    }
+
+    /**
+     * Настройка экрана для текущего фрагмента
+     * (Кнопки на тулбаре, кнопка назад, заголовок и т.д.)
+     */
+    public void setupScreen() {
+        NavigationFragment currentFragment = getCurrentScreen();
+        if(currentFragment != null) {
+            updateBackButton(currentFragment);
+            updateTitle(currentFragment);
+            updateMenuSelection(currentFragment);
+        }
+    }
+
+    /**
+     * Обновление кнопки НАЗАД для переданного фрагмента
+     */
+    public void updateBackButton(NavigationFragment fragment) {
+        if(fragment != null) {
+            // Drawer захватывает логику кнопки назад. Ее видимость при этом должна настраиваться
+            // его реализованными методами, а не стандартными методами Activity.
+            if(getSettings().hasBackButtonLogicMenu()) {
+                getSettings().getNavigationMenu().updateBackButton(this, fragment);
+            } else {
+                updateActivityBackButton(fragment);
+            }
+        }
+    }
+
+    /**
+     * Обновление стандартной кнопки назад в Активити
+     */
+    private void updateActivityBackButton(NavigationFragment fragment) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(hasBackButton(fragment));
+            actionBar.setHomeButtonEnabled(true);
+        }
+    }
+
+    /**
+     * Обновление кнопки назад, реализованной через меню.
+     * (Дровер захватывает логику кнопки назад).
+     */
+    private void updateMenuSelection(NavigationFragment fragment) {
+        if(getSettings().hasNavigationMenu()) {
+            getSettings().getNavigationMenu().select(fragment.getMenuItemId());
+        }
+    }
+
+    /**
+     * @return true, если должна быть показана кнопка назад.
+     */
+    public boolean hasBackButton(NavigationFragment fragment) {
+        // Кнопка не должна быть показана на нижнем экране
+        return fragment.hasBackButton() && getDepth() > 1;
+    }
+
+    /**
+     * Обновляет заголовок, доставая заголовок фрагмента
+     */
+    public void updateTitle(NavigationFragment fragment) {
+        if(fragment != null) {
+            setNavigationTitle(fragment.getTitle());
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(getSettings().hasMenu()) {
+            // Если указана меню, его нужно отобразить в тулбаре.
+            getMenuInflater().inflate(getSettings().getMenuId(), menu);
+            return true;
+        } else {
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        boolean menuOpened = false;
+
+        // Если открыто меню, его нужно закрыть и больше ничего не делать
+        if(getSettings().hasNavigationMenu()) {
+            NavigationMenu navigationMenu = getSettings().getNavigationMenu();
+            menuOpened = navigationMenu.isOpen();
+
+            if(menuOpened) {
+                navigationMenu.close();
+            }
+        }
+
+        if(!menuOpened) {
+            // Нужно закрыть последний открытый экран. Если он остался один, закрыть Активити.
+            if (getDepth() > 1) {
+                closeLastScreen();
+            } else {
+                finish();
+            }
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Дроверу нужно обработать нажатия по элементам меню в тулбаре.
+        // Так же это может понадобиться и другим навигационным меню.
         if(getSettings().getNavigationMenu().hasBackButtonLogic()) {
+            // Если вернулось true, то больше ничего делать не нужно.
+            // Это означает клик по элементу меню, который отвечает за навигацию.
             if(getSettings().getNavigationMenu().onOptionsItemSelected(item)) {
                 return true;
             }
@@ -301,10 +410,16 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @return количество добавленных экранов
+     */
     protected int getDepth() {
         return getSupportFragmentManager().getBackStackEntryCount();
     }
 
+    /**
+     * Задает переданный заголовок
+     */
     protected void setNavigationTitle(String text) {
         if(getSettings().hasCustomTitle()) {
             customTitle.setText(text);
@@ -313,6 +428,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @return Возвращает настройки. Если их еще нет - создает их
+     */
     protected NavigationActivitySettings getSettings() {
         if(settings == null) {
             settings = new NavigationActivitySettings();
@@ -322,18 +440,55 @@ public abstract class NavigationActivity extends AppCompatActivity {
         return settings;
     }
 
-    protected abstract void setup(NavigationActivitySettings activitySettings);
-
+    /**
+     * Настройки Активити
+     */
     protected class NavigationActivitySettings {
 
+        /**
+         * ID разметки активити
+         */
         private Integer layoutId;
+
+        /**
+         * ID контейнера, куда будут помещаться фрагменты, представляющие собой экраны приложения
+         */
         private Integer fragmentContainerId;
+
+        /**
+         * ID тулбара, если его нужно задавать
+         */
         private Integer toolbarId;
+
+        /**
+         * ID для Custom заголовка Экрана
+         */
         private Integer toolbarTitleId;
+
+        /**
+         * ID главного экрана приложения.
+         * Ему не соответствует никакой пункт меню, он показывается под всеми экранами
+         */
         private Integer dashboardScreenId;
+
+        /**
+         * ID главного экрана, если не задан Dashboard
+         */
         private Integer mainScreenId;
+
+        /**
+         * ID меню тулбара
+         */
         private Integer menuId;
+
+        /**
+         * Фабрика экранов
+         */
         private NavigationFragment.NavigationFragmentFabric fabric;
+
+        /**
+         * Навигационно меню Активити
+         */
         private NavigationMenu navigationMenu;
 
         public Integer getLayoutId() {
@@ -376,6 +531,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return fabric;
         }
 
+        /**
+         * Задает фабрику фрагментов, в которой приводится соответствие ID экранов и фрагментов,
+         * которые следует показать
+         * @param fabric Фабрика фрагментов
+         */
         public NavigationActivitySettings setFragmentFabric(NavigationFragment.NavigationFragmentFabric fabric) {
             this.fabric = fabric;
             return this;
@@ -417,6 +577,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return navigationMenu;
         }
 
+        /**
+         * @return Возвращает корректировку глубины для транзакций в зависимости от того,
+         * задан Dashboard или нет
+         */
         public int getDepthAdjustment() {
             if(hasDashboard()) {
                 return 1;
