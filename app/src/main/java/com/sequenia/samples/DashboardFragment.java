@@ -7,12 +7,11 @@ import android.view.View;
 import com.sequenia.navigation.NavigationFragment;
 
 /**
+ * Экран статистики. Главный экран приложения
  * Created by chybakut2004 on 07.06.16.
  */
 
 public class DashboardFragment extends NavigationFragment {
-
-    private View openSectionButton;
 
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
@@ -24,12 +23,12 @@ public class DashboardFragment extends NavigationFragment {
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        openSectionButton = view.findViewById(R.id.open_section_button);
+        View openSectionButton = view.findViewById(R.id.open_settings_button);
 
         openSectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_FIRST_MENU_SECTION);
+                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_SETTINGS);
             }
         });
     }

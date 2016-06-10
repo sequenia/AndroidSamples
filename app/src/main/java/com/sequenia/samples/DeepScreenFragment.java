@@ -25,11 +25,11 @@ public class DeepScreenFragment extends NavigationFragment {
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        openMenuSectionButton = view.findViewById(R.id.open_section_button);
+        openMenuSectionButton = view.findViewById(R.id.open_settings_button);
         openMenuSectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_FIRST_MENU_SECTION);
+                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_SETTINGS);
             }
         });
 

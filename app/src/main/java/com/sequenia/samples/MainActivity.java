@@ -12,7 +12,7 @@ import com.sequenia.navigation.NavigationMenu;
 public class MainActivity extends NavigationActivity {
 
     public static final int SCREEN_DASHBOARD = 1;
-    public static final int SCREEN_FIRST_MENU_SECTION = 2;
+    public static final int SCREEN_SETTINGS = 2;
     public static final int SCREEN_SECOND_MENU_SECTION = 3;
     public static final int SCREEN_DEEP_SECTION = 4;
 
@@ -29,9 +29,9 @@ public class MainActivity extends NavigationActivity {
                     @Override
                     public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
                         navigationMenuSettings
-                                .bindMenuItem(R.id.drawer_section_1, SCREEN_FIRST_MENU_SECTION)
+                                .bindMenuItem(R.id.drawer_settings, SCREEN_SETTINGS)
                                 .bindMenuItem(R.id.drawer_section_2, SCREEN_SECOND_MENU_SECTION)
-                                .bindScreen(SCREEN_FIRST_MENU_SECTION, R.id.drawer_section_1)
+                                .bindScreen(SCREEN_SETTINGS, R.id.drawer_settings)
                                 .bindScreen(SCREEN_SECOND_MENU_SECTION, R.id.drawer_section_2)
                                 .bindScreen(SCREEN_DEEP_SECTION, R.id.drawer_section_2)
                                 .addLayout(new NavigationDrawerCustomLayout(R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
@@ -56,7 +56,7 @@ public class MainActivity extends NavigationActivity {
                                 fragment = new DashboardFragment();
                                 break;
 
-                            case SCREEN_FIRST_MENU_SECTION:
+                            case SCREEN_SETTINGS:
                                 fragment = new FirstMenuSectionFragment();
                                 break;
 

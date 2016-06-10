@@ -5,8 +5,8 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/drawer_section_1"
-        android:text="Секция 1"
+        android:id="@+id/drawer_settings"
+        android:text="Настройки"
         android:textSize="35sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

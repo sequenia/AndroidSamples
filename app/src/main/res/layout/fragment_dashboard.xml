@@ -5,13 +5,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Главный экран"
+        android:text="@string/dashboard_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/open_section_button"
-        android:text="Открыть секцию меню"
+        android:id="@+id/open_settings_button"
+        android:text="@string/open_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

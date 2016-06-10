@@ -3,4 +3,8 @@
 
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
+
+    <string name="dashboard_text">Это главный экран приложения.\nТут можно отображать различную статистику и кнопки быстрого доступа к пунктам меню.\n\nВот, например, такая кнопка:</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="settings">Настройки</string>
 </resources>
