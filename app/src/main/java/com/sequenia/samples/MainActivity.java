@@ -33,6 +33,7 @@ public class MainActivity extends NavigationActivity {
                                 .bindMenuItem(R.id.drawer_section_2, SCREEN_SECOND_MENU_SECTION)
                                 .bindScreen(SCREEN_FIRST_MENU_SECTION, R.id.drawer_section_1)
                                 .bindScreen(SCREEN_SECOND_MENU_SECTION, R.id.drawer_section_2)
+                                .bindScreen(SCREEN_DEEP_SECTION, R.id.drawer_section_2)
                                 .addLayout(new NavigationDrawerCustomLayout(R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
                                     @Override
                                     public void selectMenuItem(View view) {
@@ -44,7 +45,7 @@ public class MainActivity extends NavigationActivity {
                                         view.setBackgroundColor(Color.TRANSPARENT);
                                     }
                                 });
-                    };
+                    }
                 }).setFragmentFabric(new NavigationFragment.NavigationFragmentFabric() {
                     @Override
                     public NavigationFragment newInstance(int sectionId) {

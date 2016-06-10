@@ -38,13 +38,7 @@ public abstract class NavigationMenu {
     }
 
     public boolean hasBackButtonLogic() {
-        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
-            if(layout.hasBackButtonLogic()) {
-                return true;
-            }
-        }
-
-        return false;
+        return getSettings().hasBackItemLayout();
     }
 
     public boolean isOpen() {
@@ -86,21 +80,13 @@ public abstract class NavigationMenu {
     }
 
     public void updateBackButton(NavigationActivity navigationActivity, NavigationFragment fragment) {
-        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
-            if(layout.hasBackButtonLogic()) {
-                layout.updateBackButton(navigationActivity, fragment);
-            }
+        if(getSettings().hasBackItemLayout()) {
+            getSettings().getBackItemLayout().updateBackButton(navigationActivity, fragment);
         }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        for(NavigationMenuLayout layout : getSettings().getLayouts()) {
-            if(layout.hasBackButtonLogic() && layout.onOptionsItemSelected(item)) {
-                return true;
-            }
-        }
-
-        return false;
+        return getSettings().hasBackItemLayout() && getSettings().getBackItemLayout().onOptionsItemSelected(item);
     }
 
     public Integer getMenuItemForScreen(int screenId) {
@@ -115,6 +101,7 @@ public abstract class NavigationMenu {
         private SparseIntArray screensByMenuItems;
         private SparseIntArray menuItemsByScreens;
         private List<NavigationMenuLayout> layouts;
+        private NavigationMenuLayout backItemLayout;
 
         public NavigationMenuSettings bindMenuItem(int menuItemId, int screenId) {
             getScreensByMenuItems().put(menuItemId, screenId);
@@ -128,6 +115,9 @@ public abstract class NavigationMenu {
 
         public NavigationMenuSettings addLayout(NavigationMenuLayout layout) {
             getLayouts().add(layout);
+            if(layout.hasBackButtonLogic()) {
+                this.backItemLayout = layout;
+            }
             return this;
         }
 
@@ -153,6 +143,14 @@ public abstract class NavigationMenu {
             }
 
             return layouts;
+        }
+
+        public NavigationMenuLayout getBackItemLayout() {
+            return backItemLayout;
+        }
+
+        public boolean hasBackItemLayout() {
+            return backItemLayout != null;
         }
     }
 }
