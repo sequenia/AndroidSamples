@@ -11,7 +11,7 @@ import android.view.MenuItem;
  * Created by chybakut2004 on 10.06.16.
  */
 
-public abstract class NavigationDrawerMenuLayout extends NavigationMenuLayout {
+public abstract class NavigationDrawerMenuLayout implements NavigationMenuLayout {
 
     private int drawerLayoutId;
     private int drawerViewId;
