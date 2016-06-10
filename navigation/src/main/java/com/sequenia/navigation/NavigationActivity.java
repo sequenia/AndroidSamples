@@ -214,8 +214,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
         openScreen(screenId, new Bundle());
     }
 
+    /**
+     * Очищает экран до главного экрана.
+     */
     public void clear() {
-        clear(0);
+        if(getSettings().hasDashboard()) {
+            clear(0);
+        } else {
+            clear(1);
+        }
     }
 
     /**
