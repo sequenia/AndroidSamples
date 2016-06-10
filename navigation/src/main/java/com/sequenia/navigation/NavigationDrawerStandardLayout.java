@@ -1,11 +1,11 @@
 package com.sequenia.navigation;
 
 import android.support.design.widget.NavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
 import android.view.MenuItem;
 
 /**
+ * NavigationView со стандартной разметкой
  * Created by chybakut2004 on 09.06.16.
  */
 
@@ -18,7 +18,7 @@ public abstract class NavigationDrawerStandardLayout extends NavigationDrawerMen
 
     @Override
     public void bindMenuItems(final NavigationActivity activity, final SparseIntArray screensByMenuItems) {
-        getDrawerView().setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        getNavigationView().setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 int screenId = screensByMenuItems.get(item.getItemId(), -1);
@@ -35,11 +35,14 @@ public abstract class NavigationDrawerStandardLayout extends NavigationDrawerMen
 
     @Override
     public void selectMenuItem(int menuItemId) {
-        getDrawerView().setCheckedItem(menuItemId);
+        getNavigationView().setCheckedItem(menuItemId);
     }
 
     @Override
     public void deselectMenuItem(int menuItemId) {
-
+        MenuItem item = getNavigationView().getMenu().findItem(menuItemId);
+        if(item != null) {
+            item.setChecked(false);
+        }
     }
 }

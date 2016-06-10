@@ -6,11 +6,15 @@ import android.view.View;
 
 
 /**
+ * Навигационное меню, представляющее собой NavigationView с задаваемой разметкой.
  * Created by chybakut2004 on 09.06.16.
  */
 
 public abstract class NavigationDrawerCustomLayout extends NavigationDrawerMenuLayout {
 
+    /**
+     * Ссылки на элементы меню в разметке.
+     */
     private SparseArray<View> menuItems;
 
     public NavigationDrawerCustomLayout(int drawerLayoutId, int drawerViewId, int openStrId, int closeStrId) {
