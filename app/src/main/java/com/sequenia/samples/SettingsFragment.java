@@ -7,17 +7,16 @@ import android.view.View;
 import com.sequenia.navigation.NavigationFragment;
 
 /**
+ * Фрагмент настроек
  * Created by chybakut2004 on 07.06.16.
  */
 
-public class FirstMenuSectionFragment extends NavigationFragment {
-
-    private View openDeepScreenButton;
+public class SettingsFragment extends NavigationFragment {
 
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
-                .setLayoutId(R.layout.fragment_first_menu_section)
+                .setLayoutId(R.layout.fragment_settings)
                 .setBackButtonVisibilityRule(new BackButtonVisibilityRule() {
                     @Override
                     public boolean hasBackButton() {
@@ -27,7 +26,7 @@ public class FirstMenuSectionFragment extends NavigationFragment {
                 .setTitleRule(new TitleRule() {
                     @Override
                     public String getTitle() {
-                        return "Секция меню 1";
+                        return getString(R.string.settings);
                     }
                 })
                 .setMenuId(R.menu.fragment_menu);
@@ -35,12 +34,12 @@ public class FirstMenuSectionFragment extends NavigationFragment {
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        openDeepScreenButton = view.findViewById(R.id.open_deep_screen_button);
+        View openDeepScreenButton = view.findViewById(R.id.change_password_button);
 
         openDeepScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreen(MainActivity.SCREEN_DEEP_SECTION);
+                getNavigationActivity().openScreen(MainActivity.SCREEN_CHANGE_PASSWORD);
             }
         });
     }

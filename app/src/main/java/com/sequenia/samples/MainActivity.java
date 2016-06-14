@@ -13,8 +13,8 @@ public class MainActivity extends NavigationActivity {
 
     public static final int SCREEN_DASHBOARD = 1;
     public static final int SCREEN_SETTINGS = 2;
-    public static final int SCREEN_SECOND_MENU_SECTION = 3;
-    public static final int SCREEN_DEEP_SECTION = 4;
+    public static final int SCREEN_CONTACTS = 3;
+    public static final int SCREEN_CHANGE_PASSWORD = 4;
 
     @Override
     protected void setup(NavigationActivitySettings activitySettings) {
@@ -30,10 +30,10 @@ public class MainActivity extends NavigationActivity {
                     public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
                         navigationMenuSettings
                                 .bindMenuItem(R.id.drawer_settings, SCREEN_SETTINGS)
-                                .bindMenuItem(R.id.drawer_section_2, SCREEN_SECOND_MENU_SECTION)
+                                .bindMenuItem(R.id.drawer_contacts, SCREEN_CONTACTS)
                                 .bindScreen(SCREEN_SETTINGS, R.id.drawer_settings)
-                                .bindScreen(SCREEN_SECOND_MENU_SECTION, R.id.drawer_section_2)
-                                .bindScreen(SCREEN_DEEP_SECTION, R.id.drawer_section_2)
+                                .bindScreen(SCREEN_CONTACTS, R.id.drawer_contacts)
+                                .bindScreen(SCREEN_CHANGE_PASSWORD, R.id.drawer_contacts)
                                 .addLayout(new NavigationDrawerCustomLayout(R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
                                     @Override
                                     public void selectMenuItem(View view) {
@@ -57,15 +57,15 @@ public class MainActivity extends NavigationActivity {
                                 break;
 
                             case SCREEN_SETTINGS:
-                                fragment = new FirstMenuSectionFragment();
+                                fragment = new SettingsFragment();
                                 break;
 
-                            case SCREEN_SECOND_MENU_SECTION:
-                                fragment = new SecondMenuSectionFragment();
+                            case SCREEN_CONTACTS:
+                                fragment = new ContactsFragment();
                                 break;
 
-                            case SCREEN_DEEP_SECTION:
-                                fragment = new DeepScreenFragment();
+                            case SCREEN_CHANGE_PASSWORD:
+                                fragment = new ChangePasswordFragment();
                                 break;
                         }
 

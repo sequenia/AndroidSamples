@@ -5,6 +5,16 @@
     <string name="close">Закрыть</string>
 
     <string name="dashboard_text">Это главный экран приложения.\nТут можно отображать различную статистику и кнопки быстрого доступа к пунктам меню.\n\nВот, например, такая кнопка:</string>
+    <string name="settings_text">Это фрагмент настроек. Здесь можно отобразить разные кнопки, переключатели и текстовые поля для ввода настроек. Так же отсюда можно открывать и друге экраны, позволяющие провалиться вглубь навигации:\n</string>
+    <string name="change_password_text">Введите старый пароль, новый пароль и подтвердите его:\nПрименение отправит Вас на главный экран приложения</string>
+    <string name="apply_text">Применить</string>
+    <string name="cancel">Отмена</string>
     <string name="open_settings">Открыть настройки</string>
+    <string name="open_contacts">Открыть контакты</string>
     <string name="settings">Настройки</string>
+    <string name="open_change_password_screen">Изменить пароль</string>
+    <string name="password_changing">Изменение пароля</string>
+    <string name="enter_name">Введите Ваше имя</string>
+    <string name="open_new_screen">Открыть копию экрана, просто так</string>
+    <string name="contacts">Контакты</string>
 </resources>

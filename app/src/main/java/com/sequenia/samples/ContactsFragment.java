@@ -10,11 +10,11 @@ import com.sequenia.navigation.NavigationFragment;
  * Created by chybakut2004 on 09.06.16.
  */
 
-public class SecondMenuSectionFragment extends NavigationFragment {
+public class ContactsFragment extends NavigationFragment {
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
-                .setLayoutId(R.layout.fragment_second_menu_section)
+                .setLayoutId(R.layout.fragment_contacts)
                 .setBackButtonVisibilityRule(new BackButtonVisibilityRule() {
                     @Override
                     public boolean hasBackButton() {
@@ -24,7 +24,7 @@ public class SecondMenuSectionFragment extends NavigationFragment {
                 .setTitleRule(new TitleRule() {
                     @Override
                     public String getTitle() {
-                        return "Секция меню 2";
+                        return getString(R.string.contacts);
                     }
                 });
     }

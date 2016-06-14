@@ -6,14 +6,14 @@
 
     <TextView
         android:id="@+id/drawer_settings"
-        android:text="Настройки"
+        android:text="@string/settings"
         android:textSize="35sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/drawer_section_2"
-        android:text="Секция 2"
+        android:id="@+id/drawer_contacts"
+        android:text="@string/contacts"
         android:textSize="35sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
