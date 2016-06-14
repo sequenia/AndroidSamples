@@ -31,8 +31,6 @@ public class MainActivity extends NavigationActivity {
                         navigationMenuSettings
                                 .bindMenuItem(R.id.drawer_settings, SCREEN_SETTINGS)
                                 .bindMenuItem(R.id.drawer_contacts, SCREEN_CONTACTS)
-                                .bindScreen(SCREEN_SETTINGS, R.id.drawer_settings)
-                                .bindScreen(SCREEN_CONTACTS, R.id.drawer_contacts)
                                 .bindScreen(SCREEN_CHANGE_PASSWORD, R.id.drawer_contacts)
                                 .addLayout(new NavigationDrawerCustomLayout(R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
                                     @Override

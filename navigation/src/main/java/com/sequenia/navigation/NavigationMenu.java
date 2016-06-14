@@ -165,6 +165,9 @@ public abstract class NavigationMenu {
         return settings;
     }
 
+    /**
+     * Настройки навигационного меню
+     */
     public class NavigationMenuSettings {
 
         /**
@@ -187,16 +190,34 @@ public abstract class NavigationMenu {
          */
         private NavigationMenuLayout backItemLayout;
 
+        /**
+         * Привязывает элемент меню к экрану. Говорит о том, что по нажатии на него нужно открыть
+         * соответствующий экран
+         * @param menuItemId id элемента меню
+         * @param screenId id экрана
+         */
         public NavigationMenuSettings bindMenuItem(int menuItemId, int screenId) {
             getScreensByMenuItems().put(menuItemId, screenId);
+            // По умолчанию указанный экран должен выделять указанный элемент меню
+            bindScreen(screenId, menuItemId);
             return this;
         }
 
+        /**
+         * Привязывает экран к элементу меню. Говорит о том, какой элемент нужно подкрасить
+         * при открыти экрана
+         * @param screenId id экрана
+         * @param menuItemId id элемента меню
+         */
         public NavigationMenuSettings bindScreen(int screenId, int menuItemId) {
             getMenuItemsByScreens().put(screenId, menuItemId);
             return this;
         }
 
+        /**
+         * Добавляет разметку меню
+         * @param layout разметка меню
+         */
         public NavigationMenuSettings addLayout(NavigationMenuLayout layout) {
             getLayouts().add(layout);
             if(layout.hasBackButtonLogic()) {
