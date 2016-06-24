@@ -1,6 +1,7 @@
 package com.sequenia.samples;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -31,6 +32,10 @@ public class ContactsFragment extends NavigationFragment {
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.toolbar_tabs);
+        tabLayout.removeAllTabs();
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
     }
 }

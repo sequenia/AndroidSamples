@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
@@ -43,6 +42,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         setContentView(getSettings().getLayoutId());
 
+        initViews(savedInstanceState);
+
         if(getSettings().hasToolbar()) {
             initToolbar();
         }
@@ -61,6 +62,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         setupScreen();
     }
+
+    public abstract void initViews(Bundle savedInstanceState);
 
     /**
      * Данный метод должен быть перегружен в реализации Активити с Навигацией.
@@ -289,6 +292,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
             updateTitle(currentFragment);
             updateMenuSelection(currentFragment);
             updateToolbarLayout(currentFragment);
+            if(getSettings().hasScreenChangeListener()) {
+                getSettings().getScreenChangeListener().onScreenChanged(currentFragment);
+            }
         }
     }
 
@@ -475,6 +481,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
         return settings;
     }
 
+    public interface ScreenChangeListener {
+        void onScreenChanged(NavigationFragment currentFragment);
+    }
+
     /**
      * Настройки Активити
      */
@@ -525,6 +535,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
          * Навигационно меню Активити
          */
         private NavigationMenu navigationMenu;
+
+        private ScreenChangeListener screenChangeListener;
 
         public Integer getLayoutId() {
             return layoutId;
@@ -624,6 +636,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
             }
         }
 
+        public ScreenChangeListener getScreenChangeListener() {
+            return screenChangeListener;
+        }
+
+        public NavigationActivitySettings setScreenChangeListener(ScreenChangeListener screenChangeListener) {
+            this.screenChangeListener = screenChangeListener;
+            return this;
+        }
+
         public boolean hasCustomTitle() {
             return toolbarTitleId != null;
         }
@@ -662,6 +683,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         public boolean hasBackButtonLogicMenu() {
             return navigationMenu.hasBackButtonLogic();
+        }
+
+        public boolean hasScreenChangeListener() {
+            return screenChangeListener != null;
         }
     }
 }

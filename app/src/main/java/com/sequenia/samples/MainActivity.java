@@ -1,6 +1,8 @@
 package com.sequenia.samples;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
@@ -16,6 +18,13 @@ public class MainActivity extends NavigationActivity {
     public static final int SCREEN_CONTACTS = 3;
     public static final int SCREEN_CHANGE_PASSWORD = 4;
 
+    private TabLayout tabLayout;
+
+    @Override
+    public void initViews(Bundle savedInstanceState) {
+        tabLayout = (TabLayout) findViewById(R.id.toolbar_tabs);
+    }
+
     @Override
     protected void setup(NavigationActivitySettings activitySettings) {
         activitySettings
@@ -25,6 +34,22 @@ public class MainActivity extends NavigationActivity {
                 .setToolbarTitleId(R.id.toolbar_title)
                 .setMenuId(R.menu.main_menu)
                 .setDashboardScreenId(SCREEN_DASHBOARD)
+                .setScreenChangeListener(new ScreenChangeListener() {
+                    @Override
+                    public void onScreenChanged(NavigationFragment currentFragment) {
+                        if(tabLayout != null) {
+                            switch (currentFragment.getScreenId()) {
+                                case SCREEN_CONTACTS:
+                                    tabLayout.setVisibility(View.VISIBLE);
+                                    break;
+
+                                default:
+                                    tabLayout.setVisibility(View.GONE);
+                                    break;
+                            }
+                        }
+                    }
+                })
                 .setNavigationMenu(new NavigationMenu() {
                     @Override
                     public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
