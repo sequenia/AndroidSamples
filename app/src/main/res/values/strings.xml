@@ -17,4 +17,5 @@
     <string name="enter_name">Введите Ваше имя</string>
     <string name="open_new_screen">Открыть копию экрана, просто так</string>
     <string name="contacts">Контакты</string>
+    <string name="toolbar_button">Кнопка в тулбаре</string>
 </resources>

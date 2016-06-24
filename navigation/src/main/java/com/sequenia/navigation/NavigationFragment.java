@@ -170,10 +170,25 @@ public abstract class NavigationFragment extends Fragment {
     }
 
     /**
+     * @return true, если фрагмет имеет свою разметку тулбара
+     */
+    boolean hasCustomToolbarLayout() {
+        return getSettings().hasCustomToolbarLayout();
+    }
+
+    /**
      * @return заголовок фрагмента в тулбаре
      */
     public String getTitle() {
         return getSettings().getTitle();
+    }
+
+    public Integer getCustomToolbarLayoutId() {
+        return getSettings().getCustomToolbarLayoutId();
+    }
+
+    public CustomToolbarLayoutListener getCustomToolbarLayoutListener() {
+        return getSettings().getCustomToolbarLayoutListener();
     }
 
     /**
@@ -209,7 +224,7 @@ public abstract class NavigationFragment extends Fragment {
 
         /**
          * Создает экран с переданным ID и аргументами
-         * @param screenId ID экрана
+         * @param screenId ID экранаvoid
          * @param args аргументы, которые будут переданы во фрагмент
          * @return созданный экземпляр экрана с заданным ID и аргументами.
          */
@@ -252,6 +267,10 @@ public abstract class NavigationFragment extends Fragment {
         String getTitle();
     }
 
+    protected interface CustomToolbarLayoutListener {
+        void onCustomLayoutInflated(View view);
+    }
+
     /**
      * Класс для хранения настроек фрагмента
      */
@@ -276,6 +295,12 @@ public abstract class NavigationFragment extends Fragment {
          * ID Меню тулбара
          */
         private Integer menuId;
+
+        /**
+         * ID специфической для флагмента разметки в тулбаре
+         */
+        private Integer customToolbarLayoutId;
+        private CustomToolbarLayoutListener customToolbarLayoutListener;
 
         /**
          * Задает правило, которое возвращает переданный заголовок
@@ -370,6 +395,30 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         /**
+         * @return ID специфической для фрагмента разметки тулбара
+         */
+        public Integer getCustomToolbarLayoutId() {
+            return customToolbarLayoutId;
+        }
+
+        /**
+         * @param customToolbarLayoutId
+         */
+        public NavigationFragmentSettings setCustomToolbarLayoutId(Integer customToolbarLayoutId) {
+            this.customToolbarLayoutId = customToolbarLayoutId;
+            return this;
+        }
+
+        public CustomToolbarLayoutListener getCustomToolbarLayoutListener() {
+            return customToolbarLayoutListener;
+        }
+
+        public NavigationFragmentSettings setCustomToolbarLayoutListener(CustomToolbarLayoutListener customToolbarLayoutListener) {
+            this.customToolbarLayoutListener = customToolbarLayoutListener;
+            return this;
+        }
+
+        /**
          * @return true, если задано меню в тулбаре
          */
         public boolean hasMenu() {
@@ -381,6 +430,10 @@ public abstract class NavigationFragment extends Fragment {
          */
         public boolean hasLayoutId() {
             return layoutId != null;
+        }
+
+        public boolean hasCustomToolbarLayout() {
+            return customToolbarLayoutId != null;
         }
     }
 }

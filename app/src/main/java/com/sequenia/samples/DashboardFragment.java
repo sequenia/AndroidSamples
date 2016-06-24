@@ -3,6 +3,7 @@ package com.sequenia.samples;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.sequenia.navigation.NavigationFragment;
 
@@ -18,7 +19,19 @@ public class DashboardFragment extends NavigationFragment {
         fragmentSettings
                 .setLayoutId(R.layout.fragment_dashboard)
                 .setHasBackButton(false)
-                .setTitle("");
+                .setTitle("")
+                .setCustomToolbarLayoutId(R.layout.fragment_dashboard_toolbar_layout)
+                .setCustomToolbarLayoutListener(new CustomToolbarLayoutListener() {
+                    @Override
+                    public void onCustomLayoutInflated(View view) {
+                        view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(getContext(), R.string.toolbar_button, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
     }
 
     @Override

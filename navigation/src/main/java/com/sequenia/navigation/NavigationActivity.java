@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
@@ -286,6 +288,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
             updateBackButton(currentFragment);
             updateTitle(currentFragment);
             updateMenuSelection(currentFragment);
+            updateToolbarLayout(currentFragment);
         }
     }
 
@@ -322,6 +325,31 @@ public abstract class NavigationActivity extends AppCompatActivity {
     private void updateMenuSelection(NavigationFragment fragment) {
         if(getSettings().hasNavigationMenu()) {
             getSettings().getNavigationMenu().select(fragment.getMenuItemId());
+        }
+    }
+
+    /**
+     * Обновление разметки тулбара.
+     * Если в текущем фрагменте задана разметка тулбара - помещает ее в тулбар.
+     * Если в текущем фрагменте нет разметки тулбара - удаляет все из тулбара.
+     *      Если при этом в тулбаре ничего нет, то ничего и не делает.
+     */
+    private void updateToolbarLayout(NavigationFragment navigationFragment) {
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            if(navigationFragment.hasCustomToolbarLayout()) {
+                actionBar.setDisplayShowCustomEnabled(true);
+                View view = getLayoutInflater().inflate(navigationFragment.getCustomToolbarLayoutId(), null);
+                actionBar.setCustomView(view);
+                if(navigationFragment.getCustomToolbarLayoutListener() != null) {
+                    navigationFragment.getCustomToolbarLayoutListener().onCustomLayoutInflated(view);
+                }
+            } else {
+                actionBar.setDisplayShowCustomEnabled(false);
+                if(actionBar.getCustomView() != null) {
+                    actionBar.setCustomView(null);
+                }
+            }
         }
     }
 
