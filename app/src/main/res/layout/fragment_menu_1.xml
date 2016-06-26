@@ -4,18 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="@string/settings_text"
+        android:text="@string/menu_1_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.AppCompatEditText
-        android:hint="@string/enter_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <Button
-        android:id="@+id/change_password_button"
-        android:text="@string/open_change_password_screen"
+        android:id="@+id/open_deep_screen_button"
+        android:text="@string/open_deep_screen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

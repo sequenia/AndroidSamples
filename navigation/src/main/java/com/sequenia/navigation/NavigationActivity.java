@@ -133,7 +133,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         // Создание экземпляра фрагмента по переданному ID
         NavigationFragment fragment = getSettings().getFabric().createScreen(screenId, args, getMenuItemForScreen(screenId));
         // Создание тега для транзации из ID фрагмента и текущего количества экранов
-        String tag = fragment.getTransactionTag(getDepth());
+        String tag = fragment.getTransactionTag(getScreensCount());
 
         // Замена текущего экрана новым экраном.
         getSupportFragmentManager()
@@ -364,7 +364,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
      */
     public boolean hasBackButton(NavigationFragment fragment) {
         // Кнопка не должна быть показана на нижнем экране
-        return fragment.hasBackButton() && getDepth() > 1;
+        return fragment.hasBackButton() && getScreensCount() > 1;
     }
 
     /**
@@ -403,7 +403,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         if(!menuOpened) {
             // Нужно закрыть последний открытый экран. Если он остался один, закрыть Активити.
-            if (getDepth() > 1) {
+            if (getScreensCount() > 1) {
                 closeLastScreen();
             } else {
                 finish();
@@ -454,7 +454,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
     /**
      * @return количество добавленных экранов
      */
-    protected int getDepth() {
+    public int getScreensCount() {
         return getSupportFragmentManager().getBackStackEntryCount();
     }
 

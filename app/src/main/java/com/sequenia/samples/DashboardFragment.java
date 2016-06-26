@@ -1,11 +1,8 @@
 package com.sequenia.samples;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.sequenia.navigation.NavigationFragment;
@@ -22,29 +19,17 @@ public class DashboardFragment extends NavigationFragment {
         fragmentSettings
                 .setLayoutId(R.layout.fragment_dashboard)
                 .setHasBackButton(false)
-                .setTitle("")
-                .setCustomToolbarLayoutId(R.layout.fragment_dashboard_toolbar_layout)
-                .setCustomToolbarLayoutListener(new CustomToolbarLayoutListener() {
-                    @Override
-                    public void onCustomLayoutInflated(View view) {
-                        view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(getContext(), R.string.toolbar_button, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
+                .setTitle(getString(R.string.dashboard));
     }
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        View openSectionButton = view.findViewById(R.id.open_settings_button);
+        View openSectionButton = view.findViewById(R.id.open_screen_button);
 
         openSectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_SETTINGS);
+                getNavigationActivity().openScreenWithClear(MainActivity.SCREEN_MENU_1);
             }
         });
     }

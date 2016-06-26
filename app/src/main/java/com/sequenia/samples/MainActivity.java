@@ -14,9 +14,9 @@ import com.sequenia.navigation.NavigationMenu;
 public class MainActivity extends NavigationActivity {
 
     public static final int SCREEN_DASHBOARD = 1;
-    public static final int SCREEN_SETTINGS = 2;
-    public static final int SCREEN_CONTACTS = 3;
-    public static final int SCREEN_CHANGE_PASSWORD = 4;
+    public static final int SCREEN_MENU_1 = 2;
+    public static final int SCREEN_MENU_2 = 3;
+    public static final int SCREEN_DEEP = 4;
 
     private TabLayout tabLayout;
 
@@ -39,7 +39,7 @@ public class MainActivity extends NavigationActivity {
                     public void onScreenChanged(NavigationFragment currentFragment) {
                         if(tabLayout != null) {
                             switch (currentFragment.getScreenId()) {
-                                case SCREEN_CONTACTS:
+                                case SCREEN_MENU_2:
                                     tabLayout.setVisibility(View.VISIBLE);
                                     break;
 
@@ -54,9 +54,9 @@ public class MainActivity extends NavigationActivity {
                     @Override
                     public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
                         navigationMenuSettings
-                                .bindMenuItem(R.id.drawer_settings, SCREEN_SETTINGS)
-                                .bindMenuItem(R.id.drawer_contacts, SCREEN_CONTACTS)
-                                .bindScreen(SCREEN_CHANGE_PASSWORD, R.id.drawer_contacts)
+                                .bindMenuItem(R.id.navigation_menu_screen_1, SCREEN_MENU_1)
+                                .bindMenuItem(R.id.navigation_menu_screen_2, SCREEN_MENU_2)
+                                .bindScreen(SCREEN_DEEP, R.id.navigation_menu_screen_2)
                                 .addLayout(new NavigationDrawerCustomLayout(R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
                                     @Override
                                     public void selectMenuItem(View view) {
@@ -79,16 +79,16 @@ public class MainActivity extends NavigationActivity {
                                 fragment = new DashboardFragment();
                                 break;
 
-                            case SCREEN_SETTINGS:
-                                fragment = new SettingsFragment();
+                            case SCREEN_MENU_1:
+                                fragment = new MenuFragment1();
                                 break;
 
-                            case SCREEN_CONTACTS:
-                                fragment = new ContactsFragment();
+                            case SCREEN_MENU_2:
+                                fragment = new MenuFragment2();
                                 break;
 
-                            case SCREEN_CHANGE_PASSWORD:
-                                fragment = new ChangePasswordFragment();
+                            case SCREEN_DEEP:
+                                fragment = new DeepFragment();
                                 break;
                         }
 

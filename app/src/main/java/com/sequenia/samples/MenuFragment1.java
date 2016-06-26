@@ -11,12 +11,12 @@ import com.sequenia.navigation.NavigationFragment;
  * Created by chybakut2004 on 07.06.16.
  */
 
-public class SettingsFragment extends NavigationFragment {
+public class MenuFragment1 extends NavigationFragment {
 
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
-                .setLayoutId(R.layout.fragment_settings)
+                .setLayoutId(R.layout.fragment_menu_1)
                 .setBackButtonVisibilityRule(new BackButtonVisibilityRule() {
                     @Override
                     public boolean hasBackButton() {
@@ -26,7 +26,7 @@ public class SettingsFragment extends NavigationFragment {
                 .setTitleRule(new TitleRule() {
                     @Override
                     public String getTitle() {
-                        return getString(R.string.settings);
+                        return getString(R.string.menu_fragment_1);
                     }
                 })
                 .setMenuId(R.menu.fragment_menu);
@@ -34,12 +34,12 @@ public class SettingsFragment extends NavigationFragment {
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        View openDeepScreenButton = view.findViewById(R.id.change_password_button);
+        View openDeepScreenButton = view.findViewById(R.id.open_deep_screen_button);
 
         openDeepScreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().openScreen(MainActivity.SCREEN_CHANGE_PASSWORD);
+                getNavigationActivity().openScreen(MainActivity.SCREEN_DEEP);
             }
         });
     }

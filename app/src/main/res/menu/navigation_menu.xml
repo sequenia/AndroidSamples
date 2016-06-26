@@ -4,14 +4,14 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/drawer_settings"
+            android:id="@+id/navigation_menu_screen_1"
             android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-            android:title="@string/settings"/>
+            android:title="@string/section_1"/>
 
         <item
-            android:id="@+id/drawer_contacts"
+            android:id="@+id/navigation_menu_screen_2"
             android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-            android:title="Секция 2"/>
+            android:title="@string/section_2"/>
 
     </group>
 </menu>

@@ -4,18 +4,21 @@
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
 
-    <string name="dashboard_text">Это главный экран приложения.\nТут можно отображать различную статистику и кнопки быстрого доступа к пунктам меню.\n\nВот, например, такая кнопка:</string>
-    <string name="settings_text">Это фрагмент настроек. Здесь можно отобразить разные кнопки, переключатели и текстовые поля для ввода настроек. Так же отсюда можно открывать и друге экраны, позволяющие провалиться вглубь навигации:\n</string>
-    <string name="change_password_text">Введите старый пароль, новый пароль и подтвердите его:\nПрименение отправит Вас на главный экран приложения</string>
-    <string name="apply_text">Применить</string>
-    <string name="cancel">Отмена</string>
-    <string name="open_settings">Открыть настройки</string>
-    <string name="open_contacts">Открыть контакты</string>
-    <string name="settings">Настройки</string>
-    <string name="open_change_password_screen">Изменить пароль</string>
-    <string name="password_changing">Изменение пароля</string>
-    <string name="enter_name">Введите Ваше имя</string>
+    <string name="dashboard">Главный экран</string>
+    <string name="dashboard_text">Это главный экран приложения.\nТут можно отображать различную статистику.\n\nНавигация в приложении осуществляется не только через меню, но так же при помощи обычных кнопок:</string>
+    <string name="menu_1_text">Это секция меню. При ее открытии все экраны снизу закрываются, кроме главного. Помимо секции меню можно открыть сколько угодно обычных экранов поверх другого экрана:\n</string>
+    <string name="menu_2_text"></string>
+    <string name="deep_screen_text">Это экран далеко в навигации. Их можно открыть сколько угодно. Так же, можно вернуться к какому-либо пункту меню, например ко второму.\nБонус - при открытии экрана можно указать, какой пункт меню подстветить. Откройте меню и вспомните, откуда вы пришли</string>
+    <string name="close_all_screens">Закрыть все экраны, кроме главного</string>
+    <string name="close_this_screen">Закрыть этот экран</string>
+    <string name="open_screen">Открыть 1й пункт меню</string>
+    <string name="open_menu_2">Открыть 2й пункт меню</string>
+    <string name="menu_fragment_1">Экран меню 1</string>
+    <string name="menu_fragment_2">Экран меню 2</string>
+    <string name="open_deep_screen">Открыть еще один экран</string>
+    <string name="fragment_deep">Экран номер %d</string>
     <string name="open_new_screen">Открыть копию экрана, просто так</string>
-    <string name="contacts">Контакты</string>
     <string name="toolbar_button">Кнопка в тулбаре</string>
+    <string name="section_1">Секция 1</string>
+    <string name="section_2">Секция 2</string>
 </resources>
