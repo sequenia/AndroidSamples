@@ -35,15 +35,22 @@ public class MenuFragment2 extends NavigationFragment {
                             }
                         });
                     }
+                })
+                .setToolbarFooterLayoutId(R.layout.tabs)
+                .setToolbarFooterListener(new ToolbarFooterListener() {
+                    @Override
+                    public void onToolbarFooterInflated(View view) {
+                        TabLayout tabLayout = (TabLayout) view;
+                        tabLayout.removeAllTabs();
+                        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+                        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+                        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
+                    }
                 });
     }
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.toolbar_tabs);
-        tabLayout.removeAllTabs();
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
+
     }
 }

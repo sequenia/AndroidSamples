@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
@@ -28,6 +29,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
      * View для заголовка
      */
     private TextView customTitle;
+
+    /**
+     * Футер тулбара
+     */
+    private ViewGroup toolbarFooter;
 
     /**
      * Слушатель изменения стека транзакций фрагментов
@@ -98,6 +104,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
             if(customTitle == null) {
                 throw new IllegalStateException("TextView для заголовка с указанным id не найден в разметке");
             }
+        }
+
+        if(getSettings().hasToolbarFooter()) {
+            toolbarFooter = (ViewGroup) findViewById(getSettings().getToolbarFooterId());
         }
     }
 
@@ -343,17 +353,32 @@ public abstract class NavigationActivity extends AppCompatActivity {
     private void updateToolbarLayout(NavigationFragment navigationFragment) {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
-            if(navigationFragment.hasCustomToolbarLayout()) {
+            if(navigationFragment.getSettings().hasCustomToolbarLayout()) {
                 actionBar.setDisplayShowCustomEnabled(true);
-                View view = getLayoutInflater().inflate(navigationFragment.getCustomToolbarLayoutId(), null);
+                View view = getLayoutInflater().inflate(navigationFragment.getSettings().getCustomToolbarLayoutId(), null);
                 actionBar.setCustomView(view);
-                if(navigationFragment.getCustomToolbarLayoutListener() != null) {
-                    navigationFragment.getCustomToolbarLayoutListener().onCustomLayoutInflated(view);
+                if(navigationFragment.getSettings().hasCustomToolbarLayoutListener()) {
+                    navigationFragment.getSettings().getCustomToolbarLayoutListener().onCustomLayoutInflated(view);
                 }
             } else {
                 actionBar.setDisplayShowCustomEnabled(false);
                 if(actionBar.getCustomView() != null) {
                     actionBar.setCustomView(null);
+                }
+            }
+
+            if(getSettings().hasToolbarFooter()) {
+                if (navigationFragment.getSettings().hasToolbarFooter()) {
+                    View view = getLayoutInflater().inflate(navigationFragment.getSettings().getToolbarFooterLayoutId(), null);
+                    toolbarFooter.removeAllViews();
+                    toolbarFooter.addView(view);
+                    toolbarFooter.setVisibility(View.VISIBLE);
+                    if(navigationFragment.getSettings().hasToolbarFooterListener()) {
+                        navigationFragment.getSettings().getToolbarFooterListener().onToolbarFooterInflated(view);
+                    }
+                } else {
+                    toolbarFooter.setVisibility(View.GONE);
+                    toolbarFooter.removeAllViews();
                 }
             }
         }
@@ -538,6 +563,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         private ScreenChangeListener screenChangeListener;
 
+        private Integer toolbarFooterId;
+
         public Integer getLayoutId() {
             return layoutId;
         }
@@ -645,6 +672,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
+        public Integer getToolbarFooterId() {
+            return toolbarFooterId;
+        }
+
+        public NavigationActivitySettings setToolbarFooterId(Integer toolbarFooterId) {
+            this.toolbarFooterId = toolbarFooterId;
+            return this;
+        }
+
         public boolean hasCustomTitle() {
             return toolbarTitleId != null;
         }
@@ -687,6 +723,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         public boolean hasScreenChangeListener() {
             return screenChangeListener != null;
+        }
+
+        public boolean hasToolbarFooter() {
+            return toolbarFooterId != null;
         }
     }
 }

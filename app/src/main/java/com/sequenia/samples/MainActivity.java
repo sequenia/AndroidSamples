@@ -18,11 +18,9 @@ public class MainActivity extends NavigationActivity {
     public static final int SCREEN_MENU_2 = 3;
     public static final int SCREEN_DEEP = 4;
 
-    private TabLayout tabLayout;
-
     @Override
     public void initViews(Bundle savedInstanceState) {
-        tabLayout = (TabLayout) findViewById(R.id.toolbar_tabs);
+
     }
 
     @Override
@@ -34,20 +32,11 @@ public class MainActivity extends NavigationActivity {
                 .setToolbarTitleId(R.id.toolbar_title)
                 .setMenuId(R.menu.main_menu)
                 .setDashboardScreenId(SCREEN_DASHBOARD)
+                .setToolbarFooterId(R.id.toolbar_footer)
                 .setScreenChangeListener(new ScreenChangeListener() {
                     @Override
                     public void onScreenChanged(NavigationFragment currentFragment) {
-                        if(tabLayout != null) {
-                            switch (currentFragment.getScreenId()) {
-                                case SCREEN_MENU_2:
-                                    tabLayout.setVisibility(View.VISIBLE);
-                                    break;
-
-                                default:
-                                    tabLayout.setVisibility(View.GONE);
-                                    break;
-                            }
-                        }
+                        // Тут можно настроить экран при изменении текущего фрагмента
                     }
                 })
                 .setNavigationMenu(new NavigationMenu() {

@@ -98,7 +98,7 @@ public abstract class NavigationFragment extends Fragment {
      * @return Настройки фрагмента. Если настройки еще не созданы, создает их,
      * вызывая настроечный метод фрагмента.
      */
-    private NavigationFragmentSettings getSettings() {
+    public NavigationFragmentSettings getSettings() {
         if(settings == null) {
             settings = new NavigationFragmentSettings();
             setup(settings);
@@ -170,25 +170,10 @@ public abstract class NavigationFragment extends Fragment {
     }
 
     /**
-     * @return true, если фрагмет имеет свою разметку тулбара
-     */
-    boolean hasCustomToolbarLayout() {
-        return getSettings().hasCustomToolbarLayout();
-    }
-
-    /**
      * @return заголовок фрагмента в тулбаре
      */
     public String getTitle() {
         return getSettings().getTitle();
-    }
-
-    public Integer getCustomToolbarLayoutId() {
-        return getSettings().getCustomToolbarLayoutId();
-    }
-
-    public CustomToolbarLayoutListener getCustomToolbarLayoutListener() {
-        return getSettings().getCustomToolbarLayoutListener();
     }
 
     /**
@@ -271,6 +256,10 @@ public abstract class NavigationFragment extends Fragment {
         void onCustomLayoutInflated(View view);
     }
 
+    protected interface ToolbarFooterListener {
+        void onToolbarFooterInflated(View view);
+    }
+
     /**
      * Класс для хранения настроек фрагмента
      */
@@ -301,6 +290,12 @@ public abstract class NavigationFragment extends Fragment {
          */
         private Integer customToolbarLayoutId;
         private CustomToolbarLayoutListener customToolbarLayoutListener;
+
+        /**
+         * ID специфической разметки снизу тулбара
+         */
+        private Integer toolbarFooterLayoutId;
+        private ToolbarFooterListener toolbarFooterListener;
 
         /**
          * Задает правило, которое возвращает переданный заголовок
@@ -418,6 +413,24 @@ public abstract class NavigationFragment extends Fragment {
             return this;
         }
 
+        public Integer getToolbarFooterLayoutId() {
+            return toolbarFooterLayoutId;
+        }
+
+        public NavigationFragmentSettings setToolbarFooterLayoutId(Integer toolbarFooterLayoutId) {
+            this.toolbarFooterLayoutId = toolbarFooterLayoutId;
+            return this;
+        }
+
+        public ToolbarFooterListener getToolbarFooterListener() {
+            return toolbarFooterListener;
+        }
+
+        public NavigationFragmentSettings setToolbarFooterListener(ToolbarFooterListener toolbarFooterListener) {
+            this.toolbarFooterListener = toolbarFooterListener;
+            return this;
+        }
+
         /**
          * @return true, если задано меню в тулбаре
          */
@@ -435,5 +448,18 @@ public abstract class NavigationFragment extends Fragment {
         public boolean hasCustomToolbarLayout() {
             return customToolbarLayoutId != null;
         }
+
+        public boolean hasCustomToolbarLayoutListener() {
+            return customToolbarLayoutListener != null;
+        }
+
+        public boolean hasToolbarFooter() {
+            return toolbarFooterLayoutId != null;
+        }
+
+        public boolean hasToolbarFooterListener() {
+            return toolbarFooterListener != null;
+        }
+
     }
 }
