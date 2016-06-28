@@ -2,6 +2,7 @@ package com.sequenia.samples;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
@@ -13,6 +14,9 @@ import com.sequenia.navigation.NavigationFragment;
  */
 
 public class MenuFragment2 extends NavigationFragment {
+
+    private ViewPager viewPager;
+
     @Override
     public void setup(NavigationFragmentSettings fragmentSettings) {
         fragmentSettings
@@ -51,6 +55,6 @@ public class MenuFragment2 extends NavigationFragment {
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-
+        viewPager = (ViewPager) view.findViewById(R.id.view_pager);
     }
 }

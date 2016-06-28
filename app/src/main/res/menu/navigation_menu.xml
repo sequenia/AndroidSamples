@@ -13,5 +13,10 @@
             android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
             android:title="@string/section_2"/>
 
+        <item
+            android:id="@+id/navigation_menu_screen_3"
+            android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
+            android:title="@string/section_3"/>
+
     </group>
 </menu>

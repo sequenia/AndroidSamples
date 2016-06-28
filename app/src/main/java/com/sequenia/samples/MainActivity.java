@@ -17,10 +17,13 @@ public class MainActivity extends NavigationActivity {
     public static final int SCREEN_MENU_1 = 2;
     public static final int SCREEN_MENU_2 = 3;
     public static final int SCREEN_DEEP = 4;
+    public static final int SCREEN_MENU_WITHOUT_TOOLBAR = 5;
+
+    private View appBarLayout;
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-
+        appBarLayout = findViewById(R.id.app_bar);
     }
 
     @Override
@@ -36,7 +39,15 @@ public class MainActivity extends NavigationActivity {
                 .setScreenChangeListener(new ScreenChangeListener() {
                     @Override
                     public void onScreenChanged(NavigationFragment currentFragment) {
-                        // Тут можно настроить экран при изменении текущего фрагмента
+                        switch (currentFragment.getScreenId()) {
+                            case SCREEN_MENU_WITHOUT_TOOLBAR:
+                                appBarLayout.setVisibility(View.GONE);
+                                break;
+
+                            default:
+                                appBarLayout.setVisibility(View.VISIBLE);
+                                break;
+                        }
                     }
                 })
                 .setNavigationMenu(new NavigationMenu() {
@@ -45,6 +56,7 @@ public class MainActivity extends NavigationActivity {
                         navigationMenuSettings
                                 .bindMenuItem(R.id.navigation_menu_screen_1, SCREEN_MENU_1)
                                 .bindMenuItem(R.id.navigation_menu_screen_2, SCREEN_MENU_2)
+                                .bindMenuItem(R.id.navigation_menu_screen_3, SCREEN_MENU_WITHOUT_TOOLBAR)
                                 .bindScreen(SCREEN_DEEP, R.id.navigation_menu_screen_2)
                                 .addLayout(new NavigationDrawerCustomLayout(R.id.drawer_layout, R.id.navigation, R.string.open, R.string.close) {
                                     @Override
@@ -78,6 +90,10 @@ public class MainActivity extends NavigationActivity {
 
                             case SCREEN_DEEP:
                                 fragment = new DeepFragment();
+                                break;
+
+                            case SCREEN_MENU_WITHOUT_TOOLBAR:
+                                fragment = new MenuFragmentWithoutToolbar();
                                 break;
                         }
 
