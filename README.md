@@ -80,6 +80,8 @@ public void setup(NavigationFragmentSettings fragmentSettings) {
 openScreen(SCREEN_DEEP);          // Открывает новый экран поверх текущего
 openScreen(SCREEN_DEEP, bundle);  // Можно передавать аргументы
 openScreenWithClear(SCREEN_DEEP); // Открывает новый экран, предварительно закрыв все предыдущие
+clear();                          // Закрывает все экраны 
+closeCurrentScreen();             // Закрывает текущий экран
 ```
 
 ## Дополнительно
