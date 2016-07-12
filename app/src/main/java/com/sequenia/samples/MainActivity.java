@@ -112,5 +112,6 @@ public class MainActivity extends NavigationActivity {
                         return fragment;
                     }
                 });
+
     }
 }

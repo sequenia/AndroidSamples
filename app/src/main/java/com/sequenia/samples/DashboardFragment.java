@@ -3,7 +3,6 @@ package com.sequenia.samples;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.sequenia.navigation.NavigationFragment;
 
