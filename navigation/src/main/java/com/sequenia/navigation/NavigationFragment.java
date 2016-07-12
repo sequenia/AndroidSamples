@@ -243,7 +243,7 @@ public abstract class NavigationFragment extends Fragment {
 
         /**
          * Создает экран с переданным ID и аргументами
-         * @param screenId ID экранаvoid
+         * @param screenId ID экрана
          * @param args аргументы, которые будут переданы во фрагмент
          * @return созданный экземпляр экрана с заданным ID и аргументами.
          */

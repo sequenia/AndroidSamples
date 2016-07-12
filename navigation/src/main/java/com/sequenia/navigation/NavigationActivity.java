@@ -8,13 +8,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
  * Активити для навигации через фрагменты.
- * Является контейнером для всех экранов, представленных фрагментами.
+ * Является контейнером для всех экранов, представленных фрагментами.<br/>
+ * <br/>
+ * <b>Возможности</b><br/>
+ * - Фрагменты можно открывать поверх других и
+ * с очисткой до определенного фрагмента (в том числе с очисткой всех открытых экранов).<br/>
+ * - Активити может иметь тулбар, который можно настроить в зависимости от текущего экрана.<br/>
+ * - Активити может иметь общее меню различных видов (NavigationDrawer уже реализован).<br/>
+ * - Активити может иметь Dashboard (Экран статистики), либо при старте приложения открывать
+ * указанный экран.<br/>
+ * - Каждый фрагмент имеет собственный заголовок.<br/>
+ * <br/>
+ * <b>Реализация</b><br/>
+ * Открытие новых фрагментов производится вызовом метода replace с занесением в стек транзакций.
+ * При нажатии на кнопку назад транзакция откатывается, и на экране появляется предыдущий фрагмент.<br/>
+ * <br/>
  * Created by chybakut2004 on 07.06.16.
  */
 
@@ -31,7 +43,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
     private TextView customTitle;
 
     /**
-     * Слушатель изменения стека транзакций фрагментов
+     * Слушатель изменения стека транзакций фрагментов.<br/>
+     * При изменении состояния стека транзакций производится настройка экрана
+     * в зависимости от текущего фрагмента.
      */
     private FragmentManager.OnBackStackChangedListener onBackStackChangedListener;
 
@@ -64,13 +78,16 @@ public abstract class NavigationActivity extends AppCompatActivity {
         setupScreen();
     }
 
+    /**
+     * В этом методе нужно обработать создание разметки (сохранить ссылки на View, настроить их и т.д.)
+     */
     public abstract void initViews(Bundle savedInstanceState);
 
     /**
-     * Данный метод должен быть перегружен в реализации Активити с Навигацией.
+     * Данный метод должен быть перегружен в реализации Активити с Навигацией.<br/>
      * В него передается объект настроек, через который можно сконфигурировать Активити
-     * под нужды приложения.
-     * Дальнейшая жизнь Активити зависит от заданных здесь настроек.
+     * под нужды приложения.<br/>
+     * Дальнейшая жизнь Активити зависит от заданных здесь настроек.<br/>
      * @param activitySettings объект настроек для конфигурации.
      */
     protected abstract void setup(NavigationActivitySettings activitySettings);
@@ -103,8 +120,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Инициализация первого экрана.
-     * Вызывается при создании Активити и создает переданный стартовый экран, если он еще не создан.
+     * Инициализация первого экрана.<br/>
+     * Вызывается при создании Активити и создает переданный стартовый экран, если он еще не создан.<br/>
      * @param firstScreenId id экрана для создания
      */
     private void initFirstScreen(int firstScreenId) {
@@ -126,7 +143,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Открывает экран с переданными в него аргументами
+     * Открывает экран с переданными в него аргументами.<br/>
+     * Фрагмент открывается путем замещения текущего фрагмента с занесением транзакции в стек.<br/>
      * @param screenId ID экрана
      * @param args аргументы
      */
@@ -145,8 +163,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Очистка экрана вплоть до переданного индекса (самый первый экран добавлен с индексом 0).
-     * Экран с переданным индексом так же удаляется.
+     * Очистка экрана вплоть до переданного индекса (самый первый экран добавлен с индексом 0).<br/>
+     * <b>Экран с переданным индексом так же удаляется.</b>
      * @param index индекс
      */
     public void clear(int index) {
@@ -167,7 +185,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
     /**
      * Закрывает текущий экран
      */
-    public void closeLastScreen() {
+    public void closeCurrentScreen() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if(fragmentManager.getBackStackEntryCount() > getSettings().getDepthAdjustment()) {
             fragmentManager.popBackStack();
@@ -191,8 +209,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Открывает экран, предварительно очистив все экраны снизу.
-     * Не удаляется только dashboard.
+     * Открывает экран, предварительно очистив все экраны снизу.<br/>
+     * Не удаляется только dashboard.<br/>
      * @param screenId id экрана
      */
     public void openScreenWithClear(int screenId) {
@@ -200,8 +218,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Открывает экран, предварительно очистив стек экранов до индекса index.
-     * Экран с индексом index так же удаляется.
+     * Открывает экран, предварительно очистив стек экранов до индекса index.<br/>
+     * <b>Экран с индексом index так же удаляется.</b>
      */
     public void openScreen(int screenId, Bundle args, int index) {
         clear(index);
@@ -232,11 +250,14 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Возвращает ID элемента навигационного меню для указанного экрана.
-     * Алгоритм:
-     *   - Если в меню задан ID элемента для этого экрана - возвращется он.
-     *   - Если не задан - возвращается текущий выделенный элемент меню.
-     *   - Для DASHBOARD всегда возвращается null.
+     * Во фрагментах хранится номер элемента меню (например Drawer),
+     * который должен быть выделен при его открытии.<br/>
+     * <br/>
+     * Возвращает ID элемента навигационного меню для указанного экрана.<br/>
+     * Алгоритм:<br/>
+     *   - Если в меню задан ID элемента для этого экрана - возвращется он.<br/>
+     *   - Если не задан - возвращается текущий выделенный элемент меню.<br/>
+     *   - Для DASHBOARD всегда возвращается null.<br/>
      * @param screenId - id экрана
      * @return id элемента меню
      */
@@ -361,25 +382,22 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        boolean menuOpened = false;
 
         // Если открыто меню, его нужно закрыть и больше ничего не делать
         if(getSettings().hasNavigationMenu()) {
             NavigationMenu navigationMenu = getSettings().getNavigationMenu();
-            menuOpened = navigationMenu.isOpen();
 
-            if(menuOpened) {
+            if(navigationMenu.isOpen()) {
                 navigationMenu.close();
+                return;
             }
         }
 
-        if(!menuOpened) {
-            // Нужно закрыть последний открытый экран. Если он остался один, закрыть Активити.
-            if (getScreensCount() > 1) {
-                closeLastScreen();
-            } else {
-                finish();
-            }
+        // Нужно закрыть последний открытый экран. Если он остался один, закрыть Активити.
+        if (getScreensCount() > 1) {
+            closeCurrentScreen();
+        } else {
+            finish();
         }
     }
 
@@ -405,6 +423,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Проверка настроек на правильность их задания
+     */
     private void validateSettings() {
         if(!getSettings().hasFabric()) {
             throw new IllegalStateException("Не задана фабрика фрагментов");
@@ -458,7 +479,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
     /**
-     * Настройки Активити
+     * Настройки Активити.
+     * Создаются при первом выхозове метода getSettings, а далее возвращается уже созданный экземпляр.
      */
     protected class NavigationActivitySettings {
 
@@ -508,6 +530,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
          */
         private NavigationMenu navigationMenu;
 
+        /**
+         * Слушатель на изменение экрана. Вызывается при смене фрагмента.
+         */
         private ScreenChangeListener screenChangeListener;
 
         public Integer getLayoutId() {

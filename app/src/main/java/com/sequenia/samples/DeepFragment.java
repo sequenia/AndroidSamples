@@ -3,7 +3,6 @@ package com.sequenia.samples;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.sequenia.navigation.NavigationFragment;
 
@@ -62,7 +61,7 @@ public class DeepFragment extends NavigationFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNavigationActivity().closeLastScreen();
+                getNavigationActivity().closeCurrentScreen();
             }
         });
     }
