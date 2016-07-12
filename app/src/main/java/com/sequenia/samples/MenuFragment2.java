@@ -28,8 +28,7 @@ public class MenuFragment2 extends NavigationFragment {
                     }
                 })
                 .setTitle("")
-                .setCustomToolbarLayoutId(R.layout.fragment_dashboard_toolbar_layout)
-                .setToolbarFooterLayoutId(R.layout.tabs);
+                .setCustomToolbarLayoutId(R.layout.fragment_dashboard_toolbar_layout);
     }
 
     @Override

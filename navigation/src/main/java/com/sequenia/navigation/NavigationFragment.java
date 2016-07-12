@@ -71,6 +71,15 @@ public abstract class NavigationFragment extends Fragment {
 
         View view = inflater.inflate(getSettings().getLayoutId(), container, false);
         updateToolbarLayout();
+
+        Activity activity = getActivity();
+        if(activity instanceof NavigationActivity) {
+            NavigationActivity.NavigationActivitySettings activitySettings = getNavigationActivity().getSettings();
+            if(activitySettings.hasScreenChangeListener()) {
+                activitySettings.getScreenChangeListener().onScreenChanged(this);
+            }
+        }
+
         onLayoutCreated(inflater, view, savedInstanceState);
 
         if(getSettings().hasMenu()) {
@@ -98,23 +107,6 @@ public abstract class NavigationFragment extends Fragment {
                 actionBar.setDisplayShowCustomEnabled(false);
                 if(actionBar.getCustomView() != null) {
                     actionBar.setCustomView(null);
-                }
-            }
-        }
-
-        if(activity.getSettings().hasToolbarFooter()) {
-            ViewGroup toolbarFooter;
-            toolbarFooter = (ViewGroup) activity.findViewById(activity.getSettings().getToolbarFooterId());
-            if(toolbarFooter != null) {
-                if (getSettings().hasToolbarFooter()) {
-                    View view = activity.getLayoutInflater().inflate(getSettings().getToolbarFooterLayoutId(), null);
-
-                    toolbarFooter.removeAllViews();
-                    toolbarFooter.addView(view);
-                    toolbarFooter.setVisibility(View.VISIBLE);
-                } else {
-                    toolbarFooter.setVisibility(View.GONE);
-                    toolbarFooter.removeAllViews();
                 }
             }
         }
@@ -325,11 +317,6 @@ public abstract class NavigationFragment extends Fragment {
         private Integer customToolbarLayoutId;
 
         /**
-         * ID специфической разметки снизу тулбара
-         */
-        private Integer toolbarFooterLayoutId;
-
-        /**
          * Задает правило, которое возвращает переданный заголовок
          * @param title заголовок
          */
@@ -436,15 +423,6 @@ public abstract class NavigationFragment extends Fragment {
             return this;
         }
 
-        public Integer getToolbarFooterLayoutId() {
-            return toolbarFooterLayoutId;
-        }
-
-        public NavigationFragmentSettings setToolbarFooterLayoutId(Integer toolbarFooterLayoutId) {
-            this.toolbarFooterLayoutId = toolbarFooterLayoutId;
-            return this;
-        }
-
         /**
          * @return true, если задано меню в тулбаре
          */
@@ -462,10 +440,5 @@ public abstract class NavigationFragment extends Fragment {
         public boolean hasCustomToolbarLayout() {
             return customToolbarLayoutId != null;
         }
-
-        public boolean hasToolbarFooter() {
-            return toolbarFooterLayoutId != null;
-        }
-
     }
 }

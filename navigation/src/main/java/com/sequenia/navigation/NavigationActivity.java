@@ -292,9 +292,6 @@ public abstract class NavigationActivity extends AppCompatActivity {
             updateBackButton(currentFragment);
             updateTitle(currentFragment);
             updateMenuSelection(currentFragment);
-            if(getSettings().hasScreenChangeListener()) {
-                getSettings().getScreenChangeListener().onScreenChanged(currentFragment);
-            }
         }
     }
 
@@ -513,8 +510,6 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         private ScreenChangeListener screenChangeListener;
 
-        private Integer toolbarFooterId;
-
         public Integer getLayoutId() {
             return layoutId;
         }
@@ -622,14 +617,6 @@ public abstract class NavigationActivity extends AppCompatActivity {
             return this;
         }
 
-        public Integer getToolbarFooterId() {
-            return toolbarFooterId;
-        }
-
-        public NavigationActivitySettings setToolbarFooterId(Integer toolbarFooterId) {
-            this.toolbarFooterId = toolbarFooterId;
-            return this;
-        }
 
         public boolean hasCustomTitle() {
             return toolbarTitleId != null;
@@ -673,10 +660,6 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         public boolean hasScreenChangeListener() {
             return screenChangeListener != null;
-        }
-
-        public boolean hasToolbarFooter() {
-            return toolbarFooterId != null;
         }
     }
 }

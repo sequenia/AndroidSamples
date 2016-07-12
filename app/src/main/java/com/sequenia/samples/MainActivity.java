@@ -2,11 +2,9 @@ package com.sequenia.samples;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.sequenia.navigation.NavigationActivity;
 import com.sequenia.navigation.NavigationDrawerCustomLayout;
@@ -22,10 +20,12 @@ public class MainActivity extends NavigationActivity {
     public static final int SCREEN_MENU_WITHOUT_TOOLBAR = 5;
 
     private View appBarLayout;
+    private LinearLayout toolbarFooter;
 
     @Override
     public void initViews(Bundle savedInstanceState) {
         appBarLayout = findViewById(R.id.app_bar);
+        toolbarFooter = (LinearLayout) findViewById(R.id.toolbar_footer);
     }
 
     @Override
@@ -37,7 +37,6 @@ public class MainActivity extends NavigationActivity {
                 .setToolbarTitleId(R.id.toolbar_title)
                 .setMenuId(R.menu.main_menu)
                 .setDashboardScreenId(SCREEN_DASHBOARD)
-                .setToolbarFooterId(R.id.toolbar_footer)
                 .setScreenChangeListener(new ScreenChangeListener() {
                     @Override
                     public void onScreenChanged(NavigationFragment currentFragment) {
@@ -48,6 +47,17 @@ public class MainActivity extends NavigationActivity {
 
                             default:
                                 appBarLayout.setVisibility(View.VISIBLE);
+                                break;
+                        }
+
+                        switch (currentFragment.getScreenId()) {
+                            case SCREEN_MENU_2:
+                                toolbarFooter.removeAllViews();
+                                toolbarFooter.addView(getLayoutInflater().inflate(R.layout.tabs, toolbarFooter, false));
+                                break;
+
+                            default:
+                                toolbarFooter.removeAllViews();
                                 break;
                         }
                     }
