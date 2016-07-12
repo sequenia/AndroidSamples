@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,6 +70,7 @@ public abstract class NavigationFragment extends Fragment {
         validateSettings();
 
         View view = inflater.inflate(getSettings().getLayoutId(), container, false);
+        updateToolbarLayout();
         onLayoutCreated(inflater, view, savedInstanceState);
 
         if(getSettings().hasMenu()) {
@@ -76,6 +78,46 @@ public abstract class NavigationFragment extends Fragment {
         }
 
         return view;
+    }
+
+    /**
+     * Обновление разметки тулбара.
+     * Если в текущем фрагменте задана разметка тулбара - помещает ее в тулбар.
+     * Если в текущем фрагменте нет разметки тулбара - удаляет все из тулбара.
+     *      Если при этом в тулбаре ничего нет, то ничего и не делает.
+     */
+    private void updateToolbarLayout() {
+        NavigationActivity activity = getNavigationActivity();
+        ActionBar actionBar = activity.getSupportActionBar();
+        if(actionBar != null) {
+            if(getSettings().hasCustomToolbarLayout()) {
+                actionBar.setDisplayShowCustomEnabled(true);
+                View view = activity.getLayoutInflater().inflate(getSettings().getCustomToolbarLayoutId(), null);
+                actionBar.setCustomView(view);
+            } else {
+                actionBar.setDisplayShowCustomEnabled(false);
+                if(actionBar.getCustomView() != null) {
+                    actionBar.setCustomView(null);
+                }
+            }
+        }
+
+        if(activity.getSettings().hasToolbarFooter()) {
+            ViewGroup toolbarFooter;
+            toolbarFooter = (ViewGroup) activity.findViewById(activity.getSettings().getToolbarFooterId());
+            if(toolbarFooter != null) {
+                if (getSettings().hasToolbarFooter()) {
+                    View view = activity.getLayoutInflater().inflate(getSettings().getToolbarFooterLayoutId(), null);
+
+                    toolbarFooter.removeAllViews();
+                    toolbarFooter.addView(view);
+                    toolbarFooter.setVisibility(View.VISIBLE);
+                } else {
+                    toolbarFooter.setVisibility(View.GONE);
+                    toolbarFooter.removeAllViews();
+                }
+            }
+        }
     }
 
     /**
@@ -252,14 +294,6 @@ public abstract class NavigationFragment extends Fragment {
         String getTitle();
     }
 
-    protected interface CustomToolbarLayoutListener {
-        void onCustomLayoutInflated(View view);
-    }
-
-    protected interface ToolbarFooterListener {
-        void onToolbarFooterInflated(View view);
-    }
-
     /**
      * Класс для хранения настроек фрагмента
      */
@@ -289,13 +323,11 @@ public abstract class NavigationFragment extends Fragment {
          * ID специфической для флагмента разметки в тулбаре
          */
         private Integer customToolbarLayoutId;
-        private CustomToolbarLayoutListener customToolbarLayoutListener;
 
         /**
          * ID специфической разметки снизу тулбара
          */
         private Integer toolbarFooterLayoutId;
-        private ToolbarFooterListener toolbarFooterListener;
 
         /**
          * Задает правило, которое возвращает переданный заголовок
@@ -404,30 +436,12 @@ public abstract class NavigationFragment extends Fragment {
             return this;
         }
 
-        public CustomToolbarLayoutListener getCustomToolbarLayoutListener() {
-            return customToolbarLayoutListener;
-        }
-
-        public NavigationFragmentSettings setCustomToolbarLayoutListener(CustomToolbarLayoutListener customToolbarLayoutListener) {
-            this.customToolbarLayoutListener = customToolbarLayoutListener;
-            return this;
-        }
-
         public Integer getToolbarFooterLayoutId() {
             return toolbarFooterLayoutId;
         }
 
         public NavigationFragmentSettings setToolbarFooterLayoutId(Integer toolbarFooterLayoutId) {
             this.toolbarFooterLayoutId = toolbarFooterLayoutId;
-            return this;
-        }
-
-        public ToolbarFooterListener getToolbarFooterListener() {
-            return toolbarFooterListener;
-        }
-
-        public NavigationFragmentSettings setToolbarFooterListener(ToolbarFooterListener toolbarFooterListener) {
-            this.toolbarFooterListener = toolbarFooterListener;
             return this;
         }
 
@@ -449,16 +463,8 @@ public abstract class NavigationFragment extends Fragment {
             return customToolbarLayoutId != null;
         }
 
-        public boolean hasCustomToolbarLayoutListener() {
-            return customToolbarLayoutListener != null;
-        }
-
         public boolean hasToolbarFooter() {
             return toolbarFooterLayoutId != null;
-        }
-
-        public boolean hasToolbarFooterListener() {
-            return toolbarFooterListener != null;
         }
 
     }

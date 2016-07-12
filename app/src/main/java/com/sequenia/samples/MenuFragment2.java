@@ -29,32 +29,22 @@ public class MenuFragment2 extends NavigationFragment {
                 })
                 .setTitle("")
                 .setCustomToolbarLayoutId(R.layout.fragment_dashboard_toolbar_layout)
-                .setCustomToolbarLayoutListener(new CustomToolbarLayoutListener() {
-                    @Override
-                    public void onCustomLayoutInflated(View view) {
-                        view.findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(getContext(), R.string.toolbar_button, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                })
-                .setToolbarFooterLayoutId(R.layout.tabs)
-                .setToolbarFooterListener(new ToolbarFooterListener() {
-                    @Override
-                    public void onToolbarFooterInflated(View view) {
-                        TabLayout tabLayout = (TabLayout) view;
-                        tabLayout.removeAllTabs();
-                        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-                        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
-                        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
-                    }
-                });
+                .setToolbarFooterLayoutId(R.layout.tabs);
     }
 
     @Override
     public void onLayoutCreated(LayoutInflater inflater, View view, Bundle savedInstanceState) {
-        viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        getActivity().findViewById(R.id.toolbar_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), R.string.toolbar_button, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
+        tabLayout.removeAllTabs();
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
     }
 }

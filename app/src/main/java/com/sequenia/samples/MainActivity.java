@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.sequenia.navigation.NavigationActivity;
 import com.sequenia.navigation.NavigationDrawerCustomLayout;
