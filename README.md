@@ -83,35 +83,5 @@ openScreenWithClear(SCREEN_DEEP); // Открывает новый экран, �
 ```
 
 ## Дополнительно
-### Навигационное меню
-```
-activitySettings
-    .setNavigationMenu(new NavigationMenu() {
-      @Override
-      public void setupSettings(NavigationMenuSettings navigationMenuSettings) {
-          navigationMenuSettings
-                  // По элементу меню с id R.id.navigation_menu_screen_1 открыть экран SCREEN_MENU_1
-                  .bindMenuItem(R.id.navigation_menu_screen_1, SCREEN_MENU_1)
-                  .bindMenuItem(R.id.navigation_menu_screen_2, SCREEN_MENU_2)
-                  // Можно добавить сколько угодно навигационных меню.
-                  // Это может быть NavigationDrawer, BottomNavigation или любая другая реализация.
-                  .addLayout(new NavigationMenuLayout() {
-                    // Реализация меню
-                  });
-      }
-  });
-```
 
-В библиотеке уже реализованы NavigationDrawer со стандартной разметкой и пользовательской. Описание [Тут](https://github.com/sequenia/FragmentNavigation/wiki/NavigationDrawer).
-
-### Собственный TextView для заголовка тулбара
-```
-activitySettings.setToolbarTitleId(R.id.toolbar_title)
-```
-
-### Экран статистики (Вместо стартового экрана)
-```
-activitySettings.setDashboardScreenId(SCREEN_DASHBOARD);
-```
-
-### 
+Список дополнительных возможностей описан [тут](https://github.com/sequenia/FragmentNavigation/wiki/Additional-Features).
