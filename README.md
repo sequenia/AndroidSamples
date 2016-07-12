@@ -84,4 +84,6 @@ openScreenWithClear(SCREEN_DEEP); // Открывает новый экран, �
 
 ## Дополнительно
 
-Список дополнительных возможностей описан [тут](https://github.com/sequenia/FragmentNavigation/wiki/Additional-Features).
+Список дополнительных возможностей Activity описан [тут](https://github.com/sequenia/FragmentNavigation/wiki/Additional-Activity-Features).
+
+Список дополнительных возможностей Фрагментов описан [тут](https://github.com/sequenia/FragmentNavigation/wiki/Additional-Fragment-Features)
