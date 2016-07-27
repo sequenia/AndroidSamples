@@ -7,6 +7,8 @@
 - Реализовывать различные навигационные меню (NavigationDrawer уже реализован в двух видах - со стандартной разметкой и пользовательской разметкой)
 
 ## Использование
+0) Подключите папку navigation как модуль
+
 1) Унаследуйте Activity от **NavigationActivity** и реализуйте 2 метода:
 
 > protected void setup(NavigationActivitySettings activitySettings);
